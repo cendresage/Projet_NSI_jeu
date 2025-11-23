@@ -20,5 +20,9 @@ class Map:
         self.map_layer = pyscroll.BufferedRenderer(map_data, self.screen.get_size())
         self.group = pyscroll.PyscrollGroup(map_layer=self.map_layer, default_layer=7)
 
+    def add_player(self, player):
+        self.group.add(player)
+
     def update(self):
+        self.group.update()
         self.group.draw(self.screen.get_display())
