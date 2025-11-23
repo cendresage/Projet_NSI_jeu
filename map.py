@@ -12,7 +12,7 @@ class Map:
         self.map_layer = None
         self.group = None
 
-        self.switch_map("map_test")
+        self.switch_map("map0")
 
     def switch_map(self, map: str):
         self.tmx_data = pytmx.load_pygame(f"assets/map/{map}.tmx")

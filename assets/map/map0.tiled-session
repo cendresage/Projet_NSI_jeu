@@ -1,0 +1,41 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "",
+    "expandedProjectPaths": [
+    ],
+    "fileStates": {
+        "jsp.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "map0.tmx": {
+            "scale": 0.125,
+            "selectedLayer": -1,
+            "viewCenter": {
+                "x": 632,
+                "y": 1484
+            }
+        }
+    },
+    "last.imagePath": "/home/math/Documents/Projet_NSI_jeu-main/assets/tileset",
+    "map.height": 100,
+    "map.lastUsedFormat": "tmx",
+    "map.tileHeight": 16,
+    "map.tileWidth": 16,
+    "map.width": 100,
+    "openFiles": [
+    ],
+    "project": "map0.tiled-project",
+    "recentFiles": [
+        "map0.tmx",
+        "jsp.tsx"
+    ],
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.tileSize": {
+        "height": 16,
+        "width": 16
+    }
+}
