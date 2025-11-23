@@ -9,7 +9,6 @@ class Player(Entity):
         super().__init__(keylistener, screen, x, y)
 
         self.point = 0
-        self.index_image = 0
 
     def update(self):
         super().update()

@@ -14,6 +14,7 @@ class Entity(pygame.sprite.Sprite):
         self.position: pygame.math.Vector2 = pygame.math.Vector2(x + 16,y + 32)
         self.rect: pygame.Rect = self.image.get_rect()
         self.all_images = self.get_all_images()
+        self.index_image = 0 
 
         self.hitbox: pygame.Rect = pygame.Rect(0, 0, 16, 16)
 
@@ -25,6 +26,7 @@ class Entity(pygame.sprite.Sprite):
         self.action_animation = 16
 
     def update(self):
+        self.animation_sprite()
         self.move()
         self.rect.center = self.position
         self.hitbox.midbottom = self.rect.midbottom                                         # Mise à jour de la hitbox ( au niveau du corp de l'entité )
@@ -46,6 +48,11 @@ class Entity(pygame.sprite.Sprite):
     def move_down(self):
         self.animation_walk = True
         self.direction = "down"
+
+
+    def animation_sprite(self):
+        self.index_image = int(self.step // 8)
+
 
 
     def move(self):
