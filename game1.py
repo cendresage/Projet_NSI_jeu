@@ -4,6 +4,7 @@ from screen import Screen
 from map import Map
 from entity import Entity
 from keylistener import Keylistener
+from player import Player
 
 class Game:
     def __init__(self):
@@ -11,8 +12,8 @@ class Game:
         self.screen = Screen()
         self.map = Map(self.screen)
         self.keylistener = Keylistener()
-        self.entity = Entity(self.keylistener)
-        self.map.add_player(self.entity)
+        self.Player = Player(self.keylistener, self.screen, 0, 0)
+        self.map.add_player(self.Player)
 
 
     def run(self):

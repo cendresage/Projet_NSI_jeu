@@ -3,6 +3,7 @@ import pytmx
 import pyscroll
 
 from screen import Screen
+from player import Player
 
 
 class Map:
@@ -13,7 +14,7 @@ class Map:
         self.group = None
 
         self.switch_map("map0")                                                                        # Chargement de la map
-        self.player = None
+        self.player: Player = None
 
     def switch_map(self, map: str):
         self.tmx_data = pytmx.load_pygame(f"assets/map/{map}.tmx")
@@ -25,6 +26,7 @@ class Map:
     def add_player(self, player):
         self.group.add(player)
         self.player = player
+        self.player.align_hitbox()
 
     def update(self):
         self.group.update()
