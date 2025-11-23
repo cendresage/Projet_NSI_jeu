@@ -15,7 +15,8 @@ class Entity(pygame.sprite.Sprite):
         self.rect: pygame.Rect = self.image.get_rect()
         self.all_images = self.get_all_images()
         self.index_image = 0 
-
+        self.image_part = 0
+        self.reset_animation = False
         self.hitbox: pygame.Rect = pygame.Rect(0, 0, 16, 16)
 
         self.step: int = 0
@@ -51,7 +52,10 @@ class Entity(pygame.sprite.Sprite):
 
 
     def animation_sprite(self):
-        self.index_image = int(self.step // 8)
+        if int(self.step // 8) + self.image_part >= 4:
+            self.image_part = 0
+            self.reset_animation = True
+        self.index_image = int(self.step // 8) + self.image_part 
 
 
 
@@ -72,6 +76,13 @@ class Entity(pygame.sprite.Sprite):
             elif self.step >= 16:
                 self.step = 0
                 self.animation_walk = False 
+                if self.reset_animation:
+                    self.reset_animation = False
+                else:
+                    if self.image_part == 0:
+                        self.image_part = 2
+                    else:
+                        self.image_part = 0
 
 
     def align_hitbox(self):
