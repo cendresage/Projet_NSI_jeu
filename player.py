@@ -9,17 +9,19 @@ class Player(Entity):
         super().__init__(keylistener, screen, x, y)
 
         self.point = 0
+        self.index_image = 0
 
     def update(self):
         super().update()
         self.check_move()
 
     def check_move(self):
-        if self.keylistener.key_pressed(pygame.K_q) or self.keylistener.key_pressed(pygame.K_LEFT):
-            self.move_left()
-        if self.keylistener.key_pressed(pygame.K_d) or self.keylistener.key_pressed(pygame.K_RIGHT):
-            self.move_right()
-        if self.keylistener.key_pressed(pygame.K_z) or self.keylistener.key_pressed(pygame.K_UP):
-            self.move_up()
-        if self.keylistener.key_pressed(pygame.K_s) or self.keylistener.key_pressed(pygame.K_DOWN):
-            self.move_down()
+        if self.animation_walk is False:
+            if self.keylistener.key_pressed(pygame.K_q) or self.keylistener.key_pressed(pygame.K_LEFT):
+                self.move_left()
+            if self.keylistener.key_pressed(pygame.K_d) or self.keylistener.key_pressed(pygame.K_RIGHT):
+                self.move_right()
+            if self.keylistener.key_pressed(pygame.K_z) or self.keylistener.key_pressed(pygame.K_UP):
+                self.move_up()
+            if self.keylistener.key_pressed(pygame.K_s) or self.keylistener.key_pressed(pygame.K_DOWN):
+                self.move_down()

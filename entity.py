@@ -7,6 +7,7 @@ class Entity(pygame.sprite.Sprite):
 
     def __init__(self, keylistener: Keylistener, screen: Screen, x: int, y: int):
         super().__init__()
+        self.screen = screen
         self.keylistener = keylistener
         self.spritesheet = pygame.image.load("Sprites/Player.png")
         self.image = Tool.split_image(self.spritesheet,0, 0, 40, 40)
@@ -16,26 +17,54 @@ class Entity(pygame.sprite.Sprite):
 
         self.hitbox: pygame.Rect = pygame.Rect(0, 0, 16, 16)
 
+        self.step: int = 0
+        self.animation_walk: bool = False
+        self.direction = "down"
+
+        self.animation_step_time = 0.0
+        self.action_animation = 16
+
     def update(self):
+        self.move()
         self.rect.center = self.position
         self.hitbox.midbottom = self.rect.midbottom                                         # Mise à jour de la hitbox ( au niveau du corp de l'entité )
+        self.image = self.all_images[self.direction][self.index_image]
 
 
     def move_left(self):
-        self.position[0] -= 1
-        self.image = self.all_images["left"][0]
+        self.animation_walk = True
+        self.direction = "left"
 
     def move_right(self):
-        self.position[0] += 1
-        self.image = self.all_images["right"][0]
+        self.animation_walk = True
+        self.direction = "right"
 
     def move_up(self):
-        self.position[1] -= 1
-        self.image = self.all_images["up"][0]
+        self.animation_walk = True
+        self.direction = "up"
 
     def move_down(self):
-        self.position[1] += 1
-        self.image = self.all_images["down"][0]
+        self.animation_walk = True
+        self.direction = "down"
+
+
+    def move(self):
+        if self.animation_walk:
+            self.animation_step_time += self.screen.get_delta_time()
+            if self.step < 16 and self.animation_step_time >= self.action_animation:
+                self.step += 1
+                if self.direction == "left":
+                    self.position.x -= 1
+                elif self.direction == "right":
+                    self.position.x += 1
+                elif self.direction == "up":
+                    self.position.y -= 1
+                elif self.direction == "down":
+                    self.position.y += 1
+                self.animation_step_time = 0
+            elif self.step >= 16:
+                self.step = 0
+                self.animation_walk = False 
 
 
     def align_hitbox(self):
