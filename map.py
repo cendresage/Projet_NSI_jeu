@@ -12,14 +12,14 @@ class Map:
         self.map_layer = None
         self.group = None
 
-        self.switch_map("map0")
+        self.switch_map("map0")                                                                        # Chargement de la map
         self.player = None
 
     def switch_map(self, map: str):
         self.tmx_data = pytmx.load_pygame(f"assets/map/{map}.tmx")
         map_data = pyscroll.data.TiledMapData(self.tmx_data)
         self.map_layer = pyscroll.BufferedRenderer(map_data, self.screen.get_size())
-        self.map_layer.zoom = 3
+        self.map_layer.zoom = 3                                                                      # Zoom
         self.group = pyscroll.PyscrollGroup(map_layer=self.map_layer, default_layer=4)
 
     def add_player(self, player):
@@ -28,5 +28,5 @@ class Map:
 
     def update(self):
         self.group.update()
-        self.group.center(self.player.rect.center)
+        self.group.center(self.player.rect.center)                                                    # Centrer le joueur
         self.group.draw(self.screen.get_display())
