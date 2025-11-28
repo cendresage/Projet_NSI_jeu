@@ -9,7 +9,7 @@ class Entity(pygame.sprite.Sprite):
         super().__init__()
         self.screen = screen
         self.keylistener = keylistener
-        self.spritesheet = pygame.image.load("Sprites/Player.png")
+        self.spritesheet = pygame.image.load("Sprites/Personnages/Player.png")
         self.image = Tool.split_image(self.spritesheet,0, 0, 40, 40)
         self.position: pygame.math.Vector2 = pygame.math.Vector2(x + 16,y + 32)
         self.rect: pygame.Rect = self.image.get_rect()
