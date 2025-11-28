@@ -2,6 +2,7 @@ import pygame
 from entity import Entity
 from screen import Screen
 from keylistener import Keylistener
+from bullet import Bullet
 
 class Player(Entity):
 
@@ -24,3 +25,9 @@ class Player(Entity):
                 self.move_up()
             if self.keylistener.key_pressed(pygame.K_s) or self.keylistener.key_pressed(pygame.K_DOWN):
                 self.move_down()
+
+    def get_position(self):
+        return self.position.x, self.position.y
+    
+    def fire(self):
+        return Bullet(self.position.x, self.position.y, self.direction, 10, pygame.image.load("Sprites/Bullet/bullet.png"))
