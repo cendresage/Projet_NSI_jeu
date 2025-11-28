@@ -29,5 +29,19 @@ class Player(Entity):
     def get_position(self):
         return self.position.x, self.position.y
     
+    def get_direction_vector(self):
+        if self.direction == "up":
+            return pygame.math.Vector2(0, -1)
+        elif self.direction == "down":
+            return pygame.math.Vector2(0, 1)
+        elif self.direction == "left":
+            return pygame.math.Vector2(-1, 0)
+        elif self.direction == "right":
+            return pygame.math.Vector2(1, 0)
+
+        return pygame.math.Vector2(0,0)  # pour éviter les erreurs de position
+
     def fire(self):
-        return Bullet(self.position.x, self.position.y, self.direction, 10, pygame.image.load("Sprites/Bullet/bullet.png"))
+        direction_vector = self.get_direction_vector()
+
+        return Bullet(self.position.x, self.position.y, direction_vector, 10, pygame.image.load("Sprites/Bullet/Player_bullet.png"))

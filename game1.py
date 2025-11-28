@@ -14,12 +14,13 @@ class Game:
         self.keylistener = Keylistener()
         self.Player = Player(self.keylistener, self.screen, 0, 0)
         self.map.add_player(self.Player)
+        self.player_bullets = pygame.sprite.Group()
 
 
     def run(self):
         while self.running:
             self.handle_input()
-            self.map.update()
+            self.map.update(self.player_bullets)
             self.screen.update()
 
     def handle_input(self):
@@ -30,3 +31,8 @@ class Game:
                 self.keylistener.add_key(event.key)
             elif event.type == pygame.KEYUP:
                 self.keylistener.remove_key(event.key)
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:                   # Bouton gauche de la souris
+                    new_bullet = self.Player.fire()
+                    self.player_bullets.add(new_bullet)
+                    self.map.group.add(new_bullet)
