@@ -28,16 +28,19 @@ class Game:
     def run(self):
         while self.running:
             self.handle_input()
-            self.map.update(self.player_bullets)
-            self.screen.update()
 
             for enemy in self.enemy_group:
                 new_bullet = enemy.update()
                 if new_bullet:
                     self.map.group.add(new_bullet)
                     self.enemy_bullets.add(new_bullet)
-            self.map.update(self.player_bullets)
+
+            all_bullets = self.player_bullets.copy()
+            all_bullets.add(self.enemy_bullets)
+
+            self.map.update(all_bullets)
             self.screen.update()
+
 
     def handle_input(self):
         for event in pygame.event.get():                # Gestion des évènements (récupère les touches pressées)
