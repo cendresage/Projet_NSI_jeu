@@ -11,7 +11,7 @@ class Enemy(Entity):
 
         self.player = player
         self.spritesheet = pygame.image.load("Sprites/Personnages/Ennemie.png")
-        self.image = Toole.split_image(self.spritesheet, 0, 0, 40, 40)
+        self.image = Tool.split_image(self.spritesheet, 0, 0, 40, 40)
         self.all_image = self.get_all_images()
 
         #Paramètres de l'IA
@@ -30,10 +30,12 @@ class Enemy(Entity):
 
     
     def update(self):
-        self.ai_behavior()
+        bullet = self.ai_behavior()
         super().update()
+        return bullet
 
     def ai_behavior(self):
+
         dist_vector = self.player.position - self.position
         distance = dist_vector.length()
 
@@ -46,12 +48,13 @@ class Enemy(Entity):
             self.wander()
         elif self.mode == "attack":
             self.chase_and_shoot(dist_vector, distance)
+        return None
 
     
     def wander(self):
         now = pygame.time.get_ticks()
 
-        if now - self.idle_move_timer > 2000:
+        if now - self.idle_move_time > 2000:
             self.idle_move_timer = now
 
             choices = [
@@ -77,6 +80,7 @@ class Enemy(Entity):
             if now - self.last_shot_timer > self.shoot_cooldown:
                 self.last_shot_timer = now
                 self.fire_at_player(dist_vector)
+        return None
 
     def apply_movement(self, direction):
         self.animation_walk = False                
@@ -93,4 +97,3 @@ class Enemy(Entity):
     def fire_at_player(self, direction_vector):
         bullet_dir = direction_vector.normalize()
         return Bullet(self.position.x, self.position.y, bullet_dir, 5, pygame.image.load("Sprites/Bullet/Enemy_bullet.png"))
-        

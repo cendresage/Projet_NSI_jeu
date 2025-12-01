@@ -5,6 +5,7 @@ from map import Map
 from entity import Entity
 from keylistener import Keylistener
 from player import Player
+from enemy import Enemy
 
 class Game:
     def __init__(self):
@@ -15,11 +16,26 @@ class Game:
         self.Player = Player(self.keylistener, self.screen, 0, 0)
         self.map.add_player(self.Player)
         self.player_bullets = pygame.sprite.Group()
+        self.enemy_group = pygame.sprite.Group()
+        self.enemy_bullets = pygame.sprite.Group()
+
+        # Temporaire 
+        self.ennemi1 = Enemy(self.screen, self.Player, 200, 200)
+        self.map.group.add(self.ennemi1)
+        self.enemy_group.add(self.ennemi1)
 
 
     def run(self):
         while self.running:
             self.handle_input()
+            self.map.update(self.player_bullets)
+            self.screen.update()
+
+            for enemy in self.enemy_group:
+                new_bullet = enemy.update()
+                if new_bullet:
+                    self.map.group.add(new_bullet)
+                    self.enemy_bullets.add(new_bullet)
             self.map.update(self.player_bullets)
             self.screen.update()
 
