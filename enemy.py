@@ -12,10 +12,10 @@ class Enemy(Entity):
         self.player = player
         self.spritesheet = pygame.image.load("Sprites/Personnages/Ennemie.png")
         self.image = Tool.split_image(self.spritesheet, 0, 0, 40, 40)
-        self.all_image = self.get_all_images()
+        self.all_images = self.get_all_images()
 
         #Paramètres de l'IA
-        self.action_animation = 32
+        self.action_animation = 55
         self.detection_radius = 200                                                 # Rayon de detection de l'ennemi
         self.attack_radius = 150
         self.out_of_range_radius = 300                                                    # Rayon de l'attaque
@@ -50,7 +50,7 @@ class Enemy(Entity):
         if self.mode == "idle":
             self.wander()
         elif self.mode == "attack":
-            self.chase_and_shoot(dist_vector, distance)
+            return self.chase_and_shoot(dist_vector, distance)
         return None
 
     
@@ -76,40 +76,47 @@ class Enemy(Entity):
 
     def chase_and_shoot(self, dist_vector, distance):
         
-        # Tirer
+        dx = abs(dist_vector.x)
+        dy = abs(dist_vector.y)
+
+        alignment_threshold = 20
+
         if distance < self.attack_radius:
-            now = pygame.time.get_ticks()
-            if now - self.last_shot_timer > self.shoot_cooldown:
-                self.last_shot_timer = now
-                # On tire, mais on ne retourne la balle que si la fonction est appelée
-                # Note: ici on appelle fire_at_player qui retourne une balle, 
-                # il faut la retourner à update
-                return self.fire_at_player(dist_vector)
+            is_aligned_x = dy < alignment_threshold
+            is_aligned_y = dx < alignment_threshold
 
-        # Se déplacer (si pas trop près)
-        if distance > 30:
-            # Si on est déjà en train de bouger sur une case, on finit le mouvement
-            if self.animation_walk:
-                return
-
-            # Logique pour éviter les diagonales :
-            # On regarde quel axe a la plus grande distance
-            if abs(dist_vector.x) > abs(dist_vector.y):
-                # On priorise l'axe horizontal
-                if dist_vector.x > 0:
-                    direction = pygame.math.Vector2(1, 0)
-                else:
-                    direction = pygame.math.Vector2(-1, 0)
-            else:
-                # On priorise l'axe vertical
-                if dist_vector.y > 0:
-                    direction = pygame.math.Vector2(0, 1)
-                else:
-                    direction = pygame.math.Vector2(0, -1)
-            
-            self.apply_movement(direction)
+            if is_aligned_x and is_aligned_y:
+                now = pygame.time.get_ticks()
+                if now - self.last_shot_timer > self.shoot_cooldown:
+                    self.last_shot_timer = now
+                    return self.fire_at_player(dist_vector)
+            return None
         
+        if self.animation_walk: return None
+
+        direction = pygame.math.Vector2(0,0)
+
+        if distance < 60:
+            if dx > dy:
+                direction.x = -1 if dist_vector.x > 0 else 1
+            else:
+                direction.y = -1 if dist_vector.y > 0 else 1
+
+        else:
+            if dx < dy:
+                if dist_vector.x > 0:
+                    direction.x = 1
+                else:
+                    direction.x = -1
+            else:
+                if dist_vector.y > 0:
+                    direction.y = 1
+                else:
+                    direction.y = -1
+        
+        self.apply_movement(direction)
         return None
+
 
     def apply_movement(self, direction):
         # IMPORTANT : Si on est déjà en animation de marche (entre deux cases), on interdit de changer d'avis
