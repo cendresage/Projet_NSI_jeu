@@ -18,8 +18,8 @@ class Enemy(Entity):
         self.action_animation = 50
         self.patrol_center = self.position.copy()
         self.patrol_radius = 80                                                     # L'ennemi bouge dans un carré de 160x160 autour de patrol_center
-        self.detection_radius = 200                                                 # Rayon de detection de l'ennemi
-        self.attack_radius = 150
+        self.detection_radius = 250                                                 # Rayon de detection de l'ennemi
+        self.attack_radius = 200
 
 
         #Gestion des états
@@ -29,7 +29,7 @@ class Enemy(Entity):
 
         #Gestion du tir
         self.last_shot_timer = 0
-        self.shoot_cooldown = 1000
+        self.shoot_cooldown = 1500
 
     
     def update(self):
@@ -63,7 +63,7 @@ class Enemy(Entity):
 
         now = pygame.time.get_ticks()
         # Nouvelle décision de mouvement toutes les 2 secondes
-        if now - self.idle_move_timer > 2000:
+        if now - self.idle_move_time > 2000:
             self.idle_move_timer = now
 
             # Calcul du mouvement vers un point aléatoire dans la zone

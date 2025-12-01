@@ -24,7 +24,7 @@ class Entity(pygame.sprite.Sprite):
         self.direction = "down"
 
         self.animation_step_time = 0.0
-        self.action_animation = 22
+        self.action_animation = 18
 
     def update(self):
         self.animation_sprite()
