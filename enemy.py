@@ -76,5 +76,21 @@ class Enemy(Entity):
             now = pygame.time.get_ticks()
             if now - self.last_shot_timer > self.shoot_cooldown:
                 self.last_shot_timer = now
-                
+                self.fire_at_player(dist_vector)
+
+    def apply_movement(self, direction):
+        self.animation_walk = False                
          
+        if direction.x < 0:
+            self.move_left()
+        elif direction.x > 0:
+            self.move_right()
+        elif direction.y < 0:
+            self.move_up()
+        elif direction.y > 0:
+            self.move_down()
+
+    def fire_at_player(self, direction_vector):
+        bullet_dir = direction_vector.normalize()
+        return Bullet(self.position.x, self.position.y, bullet_dir, 5, pygame.image.load("Sprites/Bullet/Enemy_bullet.png"))
+        
