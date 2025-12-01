@@ -28,10 +28,10 @@ class Map:
         self.player = player
         self.player.align_hitbox()
 
-    def update(self, bullet_group):
+    def update(self, bullet_group: pygame.sprite.Group):
         self.group.update()
         screen_rect = self.screen.get_display().get_rect()
-        out_of_bounds_rect = self.screen_rect.inflate(100,100)
+        out_of_bounds_rect = screen_rect.inflate(100,100)
         for bullet in bullet_group.copy():
             if not bullet.hitbox.colliderect(out_of_bounds_rect):
                 bullet.kill()
