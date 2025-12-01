@@ -44,4 +44,4 @@ class Player(Entity):
     def fire(self):
         direction_vector = self.get_direction_vector()
 
-        return Bullet(self.position.x, self.position.y, direction_vector, 2, pygame.image.load("Sprites/Bullet/Player_bullet.png"))
+        return Bullet(self.position.x, self.position.y, direction_vector, 5, pygame.image.load("Sprites/Bullet/Player_bullet.png"))

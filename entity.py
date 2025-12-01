@@ -24,7 +24,7 @@ class Entity(pygame.sprite.Sprite):
         self.direction = "down"
 
         self.animation_step_time = 0.0
-        self.action_animation = 16
+        self.action_animation = 22
 
     def update(self):
         self.animation_sprite()
@@ -62,7 +62,12 @@ class Entity(pygame.sprite.Sprite):
     def move(self):
         if self.animation_walk:
             self.animation_step_time += self.screen.get_delta_time()
-            if self.step < 16 and self.animation_step_time >= self.action_animation:
+
+            # CHANGEMENT : Utilisation d'une boucle while pour gérer les ralentissements
+            # Permet de déclencher plusieurs pas (mouvements de 1 pixel) dans une seule frame 
+            # si le temps écoulé (lag) le justifie.
+            while self.step < 16 and self.animation_step_time >= self.action_animation:
+                
                 self.step += 1
                 if self.direction == "left":
                     self.position.x -= 1
@@ -72,8 +77,11 @@ class Entity(pygame.sprite.Sprite):
                     self.position.y -= 1
                 elif self.direction == "down":
                     self.position.y += 1
-                self.animation_step_time = 0
-            elif self.step >= 16:
+                
+                # Déduit le temps écoulé pour ce pas (16 ms)
+                self.animation_step_time -= self.action_animation
+                
+            if self.step >= 16:
                 self.step = 0
                 self.animation_walk = False 
                 if self.reset_animation:
