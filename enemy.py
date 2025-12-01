@@ -15,9 +15,10 @@ class Enemy(Entity):
         self.all_image = self.get_all_images()
 
         #Paramètres de l'IA
-        self.speed = 0,5
+        self.action_animation = 32
         self.detection_radius = 200                                                 # Rayon de detection de l'ennemi
-        self.attack_radius = 150                                                    # Rayon de l'attaque
+        self.attack_radius = 150
+        self.out_of_range_radius = 300                                                    # Rayon de l'attaque
         
         #Gestion des états
         self.mode = "idle"
@@ -39,10 +40,12 @@ class Enemy(Entity):
         dist_vector = self.player.position - self.position
         distance = dist_vector.length()
 
-        if distance < self.detection_radius:
-            self.mode = "attack"
-        else:
-            self.mode = "idle"
+        if self.mode == "idle":
+            if distance < self.detection_radius:
+                self.mode = "attack"
+        elif self.mode == "attack":
+            if distance > self.out_of_range_radius: # Il faut s'éloigner plus pour le semer
+                self.mode = "idle"
 
         if self.mode == "idle":
             self.wander()
@@ -52,8 +55,10 @@ class Enemy(Entity):
 
     
     def wander(self):
-        now = pygame.time.get_ticks()
+        if self.animation_walk
+            return
 
+        now = pygame.time.get_ticks()
         if now - self.idle_move_time > 2000:
             self.idle_move_timer = now
 
@@ -71,19 +76,45 @@ class Enemy(Entity):
 
     def chase_and_shoot(self, dist_vector, distance):
         
-        if distance > 30:
-            direction = dist_vector.normalize()
-            self.apply_movement(direction)
-        
+        # Tirer
         if distance < self.attack_radius:
             now = pygame.time.get_ticks()
             if now - self.last_shot_timer > self.shoot_cooldown:
                 self.last_shot_timer = now
-                self.fire_at_player(dist_vector)
+                # On tire, mais on ne retourne la balle que si la fonction est appelée
+                # Note: ici on appelle fire_at_player qui retourne une balle, 
+                # il faut la retourner à update
+                return self.fire_at_player(dist_vector)
+
+        # Se déplacer (si pas trop près)
+        if distance > 30:
+            # Si on est déjà en train de bouger sur une case, on finit le mouvement
+            if self.animation_walk:
+                return
+
+            # Logique pour éviter les diagonales :
+            # On regarde quel axe a la plus grande distance
+            if abs(dist_vector.x) > abs(dist_vector.y):
+                # On priorise l'axe horizontal
+                if dist_vector.x > 0:
+                    direction = pygame.math.Vector2(1, 0)
+                else:
+                    direction = pygame.math.Vector2(-1, 0)
+            else:
+                # On priorise l'axe vertical
+                if dist_vector.y > 0:
+                    direction = pygame.math.Vector2(0, 1)
+                else:
+                    direction = pygame.math.Vector2(0, -1)
+            
+            self.apply_movement(direction)
+        
         return None
 
     def apply_movement(self, direction):
-        self.animation_walk = False                
+        # IMPORTANT : Si on est déjà en animation de marche (entre deux cases), on interdit de changer d'avis
+        if self.animation_walk:
+            return                
          
         if direction.x < 0:
             self.move_left()
@@ -95,5 +126,10 @@ class Enemy(Entity):
             self.move_down()
 
     def fire_at_player(self, direction_vector):
-        bullet_dir = direction_vector.normalize()
+        # Sécurité : Si le vecteur est nul (joueur sur l'ennemi), on prend une direction par défaut
+        if direction_vector.length() == 0:
+            bullet_dir = pygame.math.Vector2(1, 0)
+        else:
+            bullet_dir = direction_vector.normalize()
+            
         return Bullet(self.position.x, self.position.y, bullet_dir, 5, pygame.image.load("Sprites/Bullet/Enemy_bullet.png"))
