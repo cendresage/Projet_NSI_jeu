@@ -55,7 +55,7 @@ class Enemy(Entity):
 
     
     def wander(self):
-        if self.animation_walk
+        if self.animation_walk:
             return
 
         now = pygame.time.get_ticks()
