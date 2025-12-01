@@ -15,19 +15,21 @@ class Enemy(Entity):
         self.all_images = self.get_all_images()
 
         #Paramètres de l'IA
-        self.action_animation = 55
+        self.action_animation = 50
+        self.patrol_center = self.position.copy()
+        self.patrol_radius = 80                                                     # L'ennemi bouge dans un carré de 160x160 autour de patrol_center
         self.detection_radius = 200                                                 # Rayon de detection de l'ennemi
         self.attack_radius = 150
-        self.out_of_range_radius = 300                                                    # Rayon de l'attaque
-        
+
+
         #Gestion des états
-        self.mode = "idle"
+        self.mode = "patrol"
         self.idle_move_time = 0
         self.idle_direction = pygame.math.Vector2(0,0)
 
         #Gestion du tir
         self.last_shot_timer = 0
-        self.shoot_cooldown = 1500
+        self.shoot_cooldown = 1000
 
     
     def update(self):
@@ -37,86 +39,65 @@ class Enemy(Entity):
 
     def ai_behavior(self):
 
+        bullet = None
         dist_vector = self.player.position - self.position
         distance = dist_vector.length()
 
-        if self.mode == "idle":
-            if distance < self.detection_radius:
-                self.mode = "attack"
-        elif self.mode == "attack":
-            if distance > self.out_of_range_radius: # Il faut s'éloigner plus pour le semer
-                self.mode = "idle"
+        if distance < self.detection_radius:
+            self.mode = "attack"
+        else:
+            self.mode = "patrol" # Retour à la patrouille si le joueur est loin
 
-        if self.mode == "idle":
-            self.wander()
-        elif self.mode == "attack":
-            return self.chase_and_shoot(dist_vector, distance)
-        return None
 
-    
-    def wander(self):
+        if self.mode == "patrol":
+            self.patrol()
+        elif self.mode == "attack":
+            bullet = self.shoot_and_patrol(dist_vector, distance)
+            
+        return bullet
+
+
+    def patrol(self):
         if self.animation_walk:
             return
 
         now = pygame.time.get_ticks()
-        if now - self.idle_move_time > 2000:
+        # Nouvelle décision de mouvement toutes les 2 secondes
+        if now - self.idle_move_timer > 2000:
             self.idle_move_timer = now
 
-            choices = [
-                pygame.math.Vector2(0,-1),
-                pygame.math.Vector2(0,1),
-                pygame.math.Vector2(-1,0),
-                pygame.math.Vector2(1,0),
-                pygame.math.Vector2(0,0)
-            ]
-
-            self.idle_direction = random.choice(choices)
+            # Calcul du mouvement vers un point aléatoire dans la zone
+            target_x = self.patrol_center.x + random.randint(-self.patrol_radius, self.patrol_radius)
+            target_y = self.patrol_center.y + random.randint(-self.patrol_radius, self.patrol_radius)
+            
+            # Déterminer la direction principale pour y aller (Mouvement case par case)
+            dx = target_x - self.position.x
+            dy = target_y - self.position.y
+            
+            if abs(dx) > abs(dy):
+                direction = pygame.math.Vector2(1, 0) if dx > 0 else pygame.math.Vector2(-1, 0)
+            else:
+                direction = pygame.math.Vector2(0, 1) if dy > 0 else pygame.math.Vector2(0, -1)
+            
+            self.idle_direction = direction
 
         self.apply_movement(self.idle_direction)
+    
 
-    def chase_and_shoot(self, dist_vector, distance):
+    def shoot_and_patrol(self, dist_vector, distance):
         
-        dx = abs(dist_vector.x)
-        dy = abs(dist_vector.y)
-
-        alignment_threshold = 20
-
+        # PRIORITÉ 1 : TIRER SI À PORTÉE
         if distance < self.attack_radius:
-            is_aligned_x = dy < alignment_threshold
-            is_aligned_y = dx < alignment_threshold
-
-            if is_aligned_x and is_aligned_y:
-                now = pygame.time.get_ticks()
-                if now - self.last_shot_timer > self.shoot_cooldown:
-                    self.last_shot_timer = now
-                    return self.fire_at_player(dist_vector)
-            return None
+            now = pygame.time.get_ticks()
+            if now - self.last_shot_timer > self.shoot_cooldown:
+                self.last_shot_timer = now
+                return self.fire_at_player(dist_vector) # Tirez immédiatement
         
-        if self.animation_walk: return None
-
-        direction = pygame.math.Vector2(0,0)
-
-        if distance < 60:
-            if dx > dy:
-                direction.x = -1 if dist_vector.x > 0 else 1
-            else:
-                direction.y = -1 if dist_vector.y > 0 else 1
-
-        else:
-            if dx < dy:
-                if dist_vector.x > 0:
-                    direction.x = 1
-                else:
-                    direction.x = -1
-            else:
-                if dist_vector.y > 0:
-                    direction.y = 1
-                else:
-                    direction.y = -1
+        # PRIORITÉ 2 : PATROUILLER DANS LA ZONE EN ATTENDANT LE PROCHAIN TIR
+        self.patrol()
         
-        self.apply_movement(direction)
         return None
-
+    
 
     def apply_movement(self, direction):
         # IMPORTANT : Si on est déjà en animation de marche (entre deux cases), on interdit de changer d'avis
