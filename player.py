@@ -10,6 +10,8 @@ class Player(Entity):
         super().__init__(keylistener, screen, x, y)
 
         self.point = 0
+        self.hp = 3
+        self.max_hp = 3
 
     def update(self):
         super().update()

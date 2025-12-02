@@ -7,6 +7,12 @@ from keylistener import Keylistener
 from player import Player
 from enemy import Enemy
 
+HUD_SCALE = 2
+
+PLAYER_STATUS_BG_PATH = "Sprites/ATH/spr_player_status_version1.png"
+HEALTHBAR_PATH = "Sprites/ATH/spr_player_status_healthbar_bk.png"
+MONEY_ICON_PATH = "Sprites/ATH/spr_money_interface.png"
+
 class Game:
     def __init__(self):
         self.running = True
@@ -20,14 +26,33 @@ class Game:
         self.enemy_bullets = pygame.sprite.Group()
         
         pygame.font.init()
-        self.font = pygame.font.SysFont("Arial", 30)
-        self.small_font = pygame.font.SysFont("Arial", 20)
+        self.font = pygame.font.SysFont("Arial", 30, bold=True)
+        self.small_font = pygame.font.SysFont("Arial", 18, bold=True)
 
+        self.hud_bg_img = pygame.transform.scale_by(
+            pygame.image.load(PLAYER_STATUS_BG_PATH).convert_alpha(), HUD_SCALE
+        )
+        self.health_bar_img = pygame.transform.scale_by(
+            pygame.image.load(HEALTHBAR_PATH).convert_alpha(), HUD_SCALE
+        )
+        self.money_icon_img = pygame.transform.scale_by(
+            pygame.image.load(MONEY_ICON_PATH).convert_alpha(), HUD_SCALE
+        )
+
+        self.player_head_img = self._get_player_head_image()
 
         # Temporaire 
         self.ennemi1 = Enemy(self.screen, self.Player, 200, 200)
         self.map.group.add(self.ennemi1)
         self.enemy_group.add(self.ennemi1)
+
+
+    def _get_player_head_image(self):
+        player_spritesheet = pygame.image.load("Sprites/Personnages/Player.png")
+        
+        # Extrait la tête non mise à l'échelle (16x16)
+        head_surface_unscaled = player_spritesheet.subsurface(pygame.Rect(12, 2, 16, 16)).convert_alpha()
+        return pygame.transform.scale(head_surface_unscaled, (16 * HUD_SCALE, 16 * HUD_SCALE))
 
 
 
@@ -68,22 +93,36 @@ class Game:
 
     def draw_hud(self):
         display = self.screen.get_display()
+
+        # Constantes d'alignement
+        BASE_X = 20
+        BASE_Y = 20
+
+        display.blit(self.hud_bg_img, (BASE_X, BASE_Y))
+
+        head_x = BASE_X + (9 * HUD_SCALE) 
+        head_y = BASE_Y + (6 * HUD_SCALE)
+        display.blit(self.player_head_img, (head_x, head_y))
+
+        hp_bar_x = BASE_X + (33 * HUD_SCALE)
+        hp_bar_y = BASE_Y + (12 * HUD_SCALE)
+
+        if self.Player.max_hp > 0:
+            ratio = self.Player.hp / self.Player.max_hp
+            full_width = self.health_bar_img.get_width()
+            full_height = self.health_bar_img.get_height()
+            visible_width = int(full_width * ratio)
+            if visible_width > 0:
+                area_rect = pygame.Rect(0, 0, visible_width, full_height)
+                display.blit(self.health_bar_img, (hp_bar_x, hp_bar_y), area_rect)
+
+        money_y = BASE_Y + self.hud_bg_img.get_height() + 5 
+        money_x = BASE_X
+
+        display.blit(self.money_icon_img, (money_x, money_y))
+
+        score_x = money_x + 60 
+        score_y = money_y + (self.money_icon_img.get_height() // 2) - (self.small_font.get_height() // 2)
         
-        # Affichage du score
-        score_text = self.font.render(f"Points: {self.Player.point}", True, (255, 255, 255))
-        display.blit(score_text, (20, 40))
-
-        # Affichage de la vie
-        MAX_HP = 100
-        current_hp = 100
-
-        hp_bar_width = 150
-        hp_bar_height = 20
-
-        pygame.draw.rect(display, (50, 50, 50), (20, 10, hp_bar_width, hp_bar_height))
-
-        current_width = int((current_hp / MAX_HP) * hp_bar_width)
-        pygame.draw.rect(display, (0, 255, 0), (20, 10, current_width, hp_bar_height))
-
-        hp_text = self.font.render(f"HP: {current_hp}/{MAX_HP}", True, (255, 255, 255))
-        display.blit(hp_text,(20 + hp_bar_width + 10, 10))
+        score_text = self.small_font.render(f"{self.Player.point}", True, (255, 255, 255))
+        display.blit(score_text, (score_x, score_y))
