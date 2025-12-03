@@ -47,3 +47,11 @@ class Player(Entity):
         direction_vector = self.get_direction_vector()
 
         return Bullet(self.position.x, self.position.y, direction_vector, 5, pygame.image.load("Sprites/Bullet/Player_bullet.png"))
+    
+
+    def damage(self, amount):
+        if self.hp > 0:
+            self.hp -= amount
+            if self.hp <= 0:
+                self.hp = 0
+                print("Game Over")  # game over à gérer plus tard
