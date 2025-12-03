@@ -17,7 +17,7 @@ class Entity(pygame.sprite.Sprite):
         self.index_image = 0 
         self.image_part = 0
         self.reset_animation = False
-        self.hitbox: pygame.Rect = pygame.Rect(0, 0, 31, 31)
+        self.hitbox: pygame.Rect = pygame.Rect(0, 0, 25, 33)
 
         self.step: int = 0
         self.animation_walk: bool = False
