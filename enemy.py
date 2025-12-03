@@ -14,8 +14,12 @@ class Enemy(Entity):
         self.image = Tool.split_image(self.spritesheet, 0, 0, 40, 40)
         self.all_images = self.get_all_images()
 
-        self.health_bar_frame = pygame.image.load("Sprites/ATH/spr_enemy_health_bar_frame.png").convert_alpha()
-        self.health_bar = pygame.image.load("Sprites/ATH/spr_enemy_health_bar.png").convert_alpha()
+        ZOOM = 2
+        img_frame = pygame.image.load("Sprites/ATH/spr_enemy_health_bar_frame.png").convert_alpha()
+        self.health_bar_frame = pygame.transform.scale_by(img_frame, ZOOM)
+        
+        img_bar = pygame.image.load("Sprites/ATH/spr_enemy_health_bar.png").convert_alpha()
+        self.health_bar_sprite = pygame.transform.scale_by(img_bar, ZOOM)
 
         #Paramètres de l'IA
         self.action_animation = 50
@@ -52,21 +56,35 @@ class Enemy(Entity):
             self.player.point += 10
 
 
-    def draw_health_bar(self, display, camera_pos):
+    def draw_health_bar(self, display, camera_pos, zoom):
 
-        screen_x = self.rect.centerx - camera_pos[0]
-        screen_y = self.rect.top - camera_pos[1] - 15
+        screen_x = (self.rect.centerx - camera_pos[0]) * zoom
+        screen_y = (self.rect.top - camera_pos[1]) * zoom - 20
 
-        frame_width = self.health_bar_frame.get_width()
-        frame_x = screen_x - (frame_width // 2)
-        display.blit(self.health_bar_frame, (frame_x, screen_y))
+        frame_rect = self.health_bar_frame.get_rect(centerx=screen_x, bottom=screen_y)
+        display.blit(self.health_bar_frame, frame_rect)
 
-        bar_start_x = frame_x + 3
-        bar_y = screen_y + 3
+        if self.hp > 0:
 
-        for i in range(self.hp):
-            offset_x = i * (self.health_bar.get_width() + 1)
-            display.blit(self.health_bar, (bar_start_x + offset_x, bar_y))
+            HEART_OFFSET_X = 7 * zoom
+            VERTICAL_OFFSET_Y = -1 * zoom
+            SPACING = 1 * zoom
+            padding_left = 4
+
+            inner_width = self.health_bar_frame.get_width() - (HEART_OFFSET_X + padding_left)
+            bar_height = self.health_bar_sprite.get_height()
+
+            chunk_width = inner_width / self.max_hp
+
+            chunk_surface = pygame.transform.scale(self.health_bar_sprite, (int(chunk_width), bar_height))
+
+            start_x = frame_rect.left + HEART_OFFSET_X
+
+            start_y = frame_rect.top + (self.health_bar_frame.get_height() // 2) - (bar_height // 2) + VERTICAL_OFFSET_Y
+
+
+            for i in range(self.hp):
+                display.blit(chunk_surface, (start_x + (i * chunk_width), start_y))
 
 
     def ai_behavior(self):
