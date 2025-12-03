@@ -14,12 +14,17 @@ class Enemy(Entity):
         self.image = Tool.split_image(self.spritesheet, 0, 0, 40, 40)
         self.all_images = self.get_all_images()
 
+        self.health_bar_frame = pygame.image.load("Sprites/ATH/spr_enemy_health_bar_frame.png").convert_alpha()
+        self.health_bar = pygame.image.load("Sprites/ATH/spr_enemy_health_bar.png").convert_alpha()
+
         #Paramètres de l'IA
         self.action_animation = 50
         self.patrol_center = self.position.copy()
         self.patrol_radius = 80                                                     # L'ennemi bouge dans un carré de 160x160 autour de patrol_center
         self.detection_radius = 250                                                 # Rayon de detection de l'ennemi
         self.attack_radius = 200
+        self.out_of_range_radius = 300
+        self.retreat_distance = 60
 
 
         #Gestion des états
@@ -31,11 +36,38 @@ class Enemy(Entity):
         self.last_shot_timer = 0
         self.shoot_cooldown = 1500
 
+        self.max_hp = 2
+        self.hp = 2
+
     
     def update(self):
         bullet = self.ai_behavior()
         super().update()
         return bullet
+    
+    def damage(self, amount):
+        self.hp -= amount
+        if self.hp <= 0:
+            self.kill()
+            self.player.point += 10
+
+
+    def draw_health_bar(self, display, camera_pos):
+
+        screen_x = self.rect.centerx - camera_pos[0]
+        screen_y = self.rect.top - camera_pos[1] - 15
+
+        frame_width = self.health_bar_frame.get_width()
+        frame_x = screen_x - (frame_width // 2)
+        display.blit(self.health_bar_frame, (frame_x, screen_y))
+
+        bar_start_x = frame_x + 3
+        bar_y = screen_y + 3
+
+        for i in range(self.hp):
+            offset_x = i * (self.health_bar.get_width() + 1)
+            display.blit(self.health_bar, (bar_start_x + offset_x, bar_y))
+
 
     def ai_behavior(self):
 
@@ -82,6 +114,10 @@ class Enemy(Entity):
             self.idle_direction = direction
 
         self.apply_movement(self.idle_direction)
+
+
+    def is_outside_patrol_zone(self):
+        return (abs(self.position.x - self.patrol_center.x) > self.patrol_radius or abs(self.position.y - self.patrol_center.y) > self.patrol_radius)
     
 
     def shoot_and_patrol(self, dist_vector, distance):

@@ -69,12 +69,26 @@ class Game:
             all_bullets = self.player_bullets.copy()
             all_bullets.add(self.enemy_bullets)
 
+            hits = pygame.sprite.groupcollide(self.enemy_group, self.player_bullets, False, True)
+            for enemy in hits:
+                enemy.damage(1)
+
+            hits_player = pygame.sprite.spritecollide(self.Player, self.enemy_bullets, True)
+            for bullet in hits_player:
+                self.Player.damage(1)
+
+            all_bullets = self.player_bullets.copy()
+            all_bullets.add(self.enemy_bullets)
+
             self.map.update(all_bullets)
 
-            self.draw_hud()
+            self.draw_hud
+
+            camera_pos = self.map.group.view.topleft
+            for enemy in self.enemy_group:
+                enemy.draw_health_bar(self.screen.get_display(), camera_pos)
 
             self.screen.update()
-
 
     def handle_input(self):
         for event in pygame.event.get():                # Gestion des évènements (récupère les touches pressées)
