@@ -13,7 +13,7 @@ class Map:
         self.map_layer = None
         self.group = None
 
-        self.switch_map("map0")                                                                        # Chargement de la map
+        self.switch_map("map1")                                                                        # Chargement de la map
         self.player: Player = None
 
     def switch_map(self, map: str):
