@@ -1,5 +1,7 @@
 import pygame
+import sys
 from screen import Screen
+
 
 BACKGROUND_PATH = "Image/Image de fond.png"
 BUTTON_IMG_PATH = "Sprites/ATH/spr_banner_hud.png"
