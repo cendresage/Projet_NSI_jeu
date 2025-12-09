@@ -2,12 +2,14 @@ import pygame
 import sys
 from screen import Screen
 
+ZOOM = 3
 
 BACKGROUND_PATH = "Image/Image de fond.png"
 BUTTON_IMG_PATH = "Sprites/ATH/spr_banner_hud.png"
 
 WHITE = (255, 255, 255)
 GOLD = (255, 215, 0)
+BLACK = (0, 0, 0)
 TEXT_COLOR = (255, 255, 255)
 
 class ScrollingBackground:
@@ -28,7 +30,7 @@ class ScrollingBackground:
         if self.x < -self.width:
             self.x = 0
 
-    def draw(self, screen):
+    def draw(self, surface):
         surface.blit(self.image, (self.x,0))
         surface.blit(self.image, (self.x + self.width,0))
 
@@ -36,11 +38,12 @@ class ScrollingBackground:
 
 class Button:
     def __init__(self, text, x, y, scale = 3):
-        original_image = pygame.image.load(BUTTON_IMG_PATH).convert_alpha()
-        width = original_image.get_width() * scale
-        height = original_image.get_height() * scale
+        self.button_original_image = pygame.image.load(BUTTON_IMG_PATH).convert_alpha()
+        
+        width = self.button_original_image.get_width() * scale
+        height = self.button_original_image.get_height() * scale
 
-        self.image = pygame.transform.scale(original_image, (width, height))
+        self.image = pygame.transform.scale(self.button_original_image, (width, height))
         self.rect = self.image.get_rect(center = (x, y))
         self.text = text
         self.font = pygame.font.SysFont("Arial", 20 * scale, bold=True)
@@ -50,11 +53,18 @@ class Button:
     def update(self, mouse_pos):
         self.is_hovered = self.rect.collidepoint(mouse_pos)
 
+    
+    def draw(self, surface):
 
         color = GOLD if self.is_hovered else WHITE
+        text_image = self.button_original_image
+        button = pygame.transform.scale_by(text_image, ZOOM)
         text_surf = self.font.render(self.text, True, color)
         text_rect = text_surf.get_rect(center = self.rect.center)
         shadow_surf = self.font.render(self.text, True, (0, 0, 0))
+        surface.blit(button, text_rect)
+        color = GOLD if self.is_hovered else WHITE
+        
 
         surface.blit(shadow_surf, (text_rect.x + 2, text_rect.y + 2))
         surface.blit(text_surf, text_rect)
@@ -67,6 +77,7 @@ class Menu:
         self.clock = pygame.time.Clock()
 
         self.background = ScrollingBackground(self.screen.get_height(), speed = 2)
+        center_x = self.screen.get_width() // 2
         start_y = 250
         gap = 120                                             #Espace entre les boutons
 
@@ -75,6 +86,7 @@ class Menu:
         self.btn_tuto = Button("TUTORIEL", center_x, start_y + gap * 2)
 
         self.buttons = [self.btn_play, self.btn_settings, self.btn_tuto]
+ 
 
     def handle_input(self):
         mouse_pos = pygame.mouse.get_pos()
@@ -110,6 +122,7 @@ class Menu:
             
             title_font = pygame.font.SysFont("Arial", 80, bold = True)
             title_surf = title_font.render("Laser Game", True, WHITE)
+            shadow_surf = title_font.render("Laser Game", True, BLACK)
 
             self.screen.blit(shadow_surf, (self.screen.get_width() // 2 - title_surf.get_width() // 2 + 4, 84))
             self.screen.blit(title_surf, (self.screen.get_width() // 2 - title_surf.get_width() // 2, 80))
