@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="16" tileheight="16" infinite="0" nextlayerid="10" nextobjectid="1">
- <tileset firstgid="1" source="../Downloads/FD_Dungeon_Free.tsx"/>
+ <tileset firstgid="1" source="jsp.tsx"/>
  <tileset firstgid="769" source="garden.tsx"/>
  <tileset firstgid="1242" source="Tilemap Dungeon original size.tsx"/>
  <layer id="1" name="Sol" width="100" height="100">
