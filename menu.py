@@ -7,8 +7,8 @@ ZOOM = 2
 BACKGROUND_PATH = "Image/Image de fond.png"
 BUTTON_IMG_PATH = "Sprites/ATH/spr_banner_hud.png"
 
-GAMEOVER_IMG_1 = "Image/gameOver1.png"
-GAMEOVER_IMG_2 = "Image/gameOver2.png"
+GAMEOVER_IMG_1 = "Image/game_over1.png"
+GAMEOVER_IMG_2 = "Image/game_over2.png"
 
 WHITE = (255, 255, 255)
 GOLD = (255, 215, 0)
@@ -161,7 +161,7 @@ class GameOverMenu:
 
         center_x = self.screen.get_width() // 2
         bottom_y = self.screen.get_height() - 100
-        self.btn_exit = Button("Menu", center_x, bottom_y)
+        self.btn_menu = Button("Menu", center_x, bottom_y)
 
     def handle_input(self):
         mouse_pos = pygame.mouse.get_pos()
