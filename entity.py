@@ -94,7 +94,7 @@ class Entity(pygame.sprite.Sprite):
 
 
     def align_hitbox(self):
-        self.position.x += 16
+        self.position.x += 14
         self.position.y += 32
         self.rect.center = self.position
         self.hitbox.midbottom = self.rect.midbottom
