@@ -21,6 +21,11 @@ class Map:
         self.player: Player = None
         self.switchs: list[Switch]
 
+        self.map_layer_config = {
+            "map0": 6,
+            "map2": 7
+        }
+
         self.spawn_data = self.load_spawn_data()
 
         self.current_map = Switch("switch", "map0", pygame.Rect(0, 0, 0, 0), 0)
@@ -28,12 +33,12 @@ class Map:
         self.switch_map(self.current_map)
 
     def load_spawn_data(self):
-        path = "assets/map/spawns.txt"
+        path = "assets/data/spawns.json"
         if os.path.exists(path):
             with open(path, "r") as f:
                 return json.load(f)
         else:
-            print("Erreur: Fichier spawns.json introuvable.")
+            print(f"Erreur: Fichier {path} introuvable.")
             return {}
 
 
@@ -43,11 +48,17 @@ class Map:
         map_data = pyscroll.data.TiledMapData(self.tmx_data)
         self.map_layer = pyscroll.BufferedRenderer(map_data, self.screen.get_size())
         self.map_layer.zoom = 3                                                                      # Zoom
+        
+        layer_index = self.map_layer_config.get(self.current_map_name, 6)
+
         self.group = pyscroll.PyscrollGroup(map_layer=self.map_layer, default_layer=6)
 
         self.switchs = []
 
         for obj in self.tmx_data.objects:
+            # Petite sécurité si un objet n'a pas de nom dans Tiled
+            if obj.name is None: continue 
+            
             type = obj.name.split(" ")[0]
             if type == "switch":
                 self.switchs.append(Switch(
