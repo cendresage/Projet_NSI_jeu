@@ -8,7 +8,7 @@
   <objectgroup id="10" name="Interface">
    <object id="3" name="switch map2 0" x="736" y="64" height="16"/>
    <object id="4" name="switch map2 0" x="720" y="64" width="32" height="16"/>
-   <object id="5" name="spawn map2 0" x="736.436" y="115.239">
+   <object id="5" name="spawn map2 0" x="724.072" y="81.4205">
     <point/>
    </object>
   </objectgroup>
