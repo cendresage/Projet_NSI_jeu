@@ -3,6 +3,7 @@ from entity import Entity
 from screen import Screen
 from keylistener import Keylistener
 from bullet import Bullet
+from switch import Switch
 
 class Player(Entity):
 
@@ -13,20 +14,34 @@ class Player(Entity):
         self.hp = 3
         self.max_hp = 3
 
+        self.switchs: list[Switch]
+        self.change_map: Switch | None = None
+
     def update(self):
         super().update()
         self.check_move()
 
     def check_move(self):
         if self.animation_walk is False:
+            temp_hitbox = self.hitbox.copy()
             if self.keylistener.key_pressed(pygame.K_q) or self.keylistener.key_pressed(pygame.K_LEFT):
+                temp_hitbox.x -= 16
+                self.check_collisions_switchs(temp_hitbox)
                 self.move_left()
-            if self.keylistener.key_pressed(pygame.K_d) or self.keylistener.key_pressed(pygame.K_RIGHT):
+            elif self.keylistener.key_pressed(pygame.K_d) or self.keylistener.key_pressed(pygame.K_RIGHT):
+                temp_hitbox.x += 16
+                self.check_collisions_switchs(temp_hitbox)
                 self.move_right()
-            if self.keylistener.key_pressed(pygame.K_z) or self.keylistener.key_pressed(pygame.K_UP):
+            elif self.keylistener.key_pressed(pygame.K_z) or self.keylistener.key_pressed(pygame.K_UP):
+                temp_hitbox.y -= 16
+                self.check_collisions_switchs(temp_hitbox)
                 self.move_up()
-            if self.keylistener.key_pressed(pygame.K_s) or self.keylistener.key_pressed(pygame.K_DOWN):
+            elif self.keylistener.key_pressed(pygame.K_s) or self.keylistener.key_pressed(pygame.K_DOWN):
+                temp_hitbox.y += 16
+                self.check_collisions_switchs(temp_hitbox)
                 self.move_down()
+            
+            
 
     def get_position(self):
         return self.position.x, self.position.y
@@ -55,3 +70,14 @@ class Player(Entity):
             if self.hp <= 0:
                 self.hp = 0
                 print("Game Over")  # game over à gérer plus tard
+
+
+    def add_switch(self, switch : list[Switch]):
+        self.switchs = switchs 
+
+    def check_collisions_switchs(self, temp_hitbox):
+        if self.swiths:
+            for switch in self.switchs:
+                if switch.check_collision(self.hitbox):
+                    self.change_map = switch
+        return None
