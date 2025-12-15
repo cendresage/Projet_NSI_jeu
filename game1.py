@@ -17,13 +17,19 @@ class Game:
     def __init__(self):
         self.running = True
         self.screen = Screen()
-        self.map = Map(self.screen)
         self.keylistener = Keylistener()
-        self.Player = Player(self.keylistener, self.screen, 0, 0)
-        self.map.add_player(self.Player)
+        
+        # 1. Création des groupes
         self.player_bullets = pygame.sprite.Group()
         self.enemy_group = pygame.sprite.Group()
         self.enemy_bullets = pygame.sprite.Group()
+
+        # 2. Création de la map en lui passant le groupe d'ennemis
+        self.map = Map(self.screen, self.enemy_group)
+        
+        # 3. Création du joueur et ajout à la map
+        self.Player = Player(self.keylistener, self.screen, 0, 0)
+        self.map.add_player(self.Player)
         
         pygame.font.init()
         self.font = pygame.font.SysFont("Arial", 30, bold=True)
@@ -38,13 +44,8 @@ class Game:
         self.money_icon_img = pygame.transform.scale_by(
             pygame.image.load(MONEY_ICON_PATH).convert_alpha(), HUD_SCALE
         )
-
+        
         self.player_head_img = self._get_player_head_image()
-
-        # Temporaire 
-        self.ennemi1 = Enemy(self.screen, self.Player, 200, 200)
-        self.map.group.add(self.ennemi1)
-        self.enemy_group.add(self.ennemi1)
 
 
     def _get_player_head_image(self):

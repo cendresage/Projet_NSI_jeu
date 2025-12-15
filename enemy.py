@@ -6,7 +6,7 @@ from tool import Tool
 from bullet import Bullet
 
 class Enemy(Entity):
-    def __init__(self, screen, player, x, y):
+    def __init__(self, screen, player, x, y, max_hp=2):
         super().__init__(None, screen, x, y)
 
         self.player = player
@@ -38,10 +38,11 @@ class Enemy(Entity):
 
         #Gestion du tir
         self.last_shot_timer = 0
-        self.shoot_cooldown = 1500
+        self.shoot_cooldown = 1900
 
-        self.max_hp = 2
+        self.max_hp = max_hp
         self.hp = 2
+
 
     
     def update(self):

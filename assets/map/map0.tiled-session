@@ -12,11 +12,30 @@
             "scaleInEditor": 1
         },
         "map0.tmx": {
-            "scale": 0.125,
-            "selectedLayer": -1,
+            "expandedGroupLayers": [
+                13,
+                11
+            ],
+            "expandedObjectLayers": [
+                13,
+                10
+            ],
+            "scale": 0.25,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 632,
-                "y": 1484
+                "x": 402,
+                "y": 712
+            }
+        },
+        "map2.tmx": {
+            "expandedGroupLayers": [
+                11
+            ],
+            "scale": 0.33,
+            "selectedLayer": 9,
+            "viewCenter": {
+                "x": 392.42424242424244,
+                "y": 869.6969696969696
             }
         }
     },
