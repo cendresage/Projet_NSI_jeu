@@ -175,4 +175,24 @@ class GameOverMenu:
                 if event.button == 1:
                     if self.btn_menu.rect.collidepoint(mouse_pos):
                         return "menu"
+
+        self.btn_menu.update(mouse_pos)
+        return None
+
+    def run(self):
+        while self.running:
+            action = self.handle_input()
+            if action == "menu":
+                return "menu"
+
+            current_time = pygame.time.get_ticks()
+            if current_time - self.animation_timer > self.animation_speed:
+                self.current_image_index = (self.current_image_index + 1) % len(self.images)
+                self.animation_timer = current_time
+            
+            self.screen.blit(self.images[self.current_image_index], (0, 0))
+            self.btn_menu.draw(self.screen)
+
+            pygame.display.flip()
+            self.clock.tick(60)
                 
