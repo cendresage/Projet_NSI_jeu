@@ -157,3 +157,24 @@ class Game:
         
         score_text = self.small_font.render(f"{self.Player.point}", True, (255, 255, 255))
         display.blit(score_text, (score_x, score_y))
+
+    
+    def fade_out_game_over(self):
+        display_surface = self.screen.get_display()
+
+        # Prend l'écran actuel pour le figer
+        snapshot = display_surface.copy()
+        
+        # Surface noir transparente pour le fondu
+        fade_surface = pygame.Surface(display_surface.get_size())
+        fade_surface.fill((0, 0, 0))
+
+        # Boucle de fondu
+        for alpha in range(0, 255, 5):
+            fade_surface.set_alpha(alpha)
+
+            display_surface.blit(snapshot, (0, 0))
+            display_surface.blit(fade_surface, (0, 0))
+
+            self.screen.update()
+            pygame.time.delay(10)
