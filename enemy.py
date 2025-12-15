@@ -175,4 +175,4 @@ class Enemy(Entity):
         else:
             bullet_dir = direction_vector.normalize()
             
-        return Bullet(self.position.x, self.position.y, bullet_dir, 5, pygame.image.load("Sprites/Bullet/Enemy_bullet.png"))
+        return Bullet(self.position.x, self.position.y, bullet_dir, 3, pygame.image.load("Sprites/Bullet/Enemy_bullet.png"))
