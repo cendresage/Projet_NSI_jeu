@@ -177,4 +177,4 @@ class Game:
             display_surface.blit(fade_surface, (0, 0))
 
             self.screen.update()
-            pygame.time.delay(10)
+            pygame.time.delay(20)

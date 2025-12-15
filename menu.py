@@ -182,7 +182,7 @@ class GameOverMenu:
             self.draw()
             self.screen.blit(fade_surface, (0, 0))
             pygame.display.flip()
-            self.clock.tick(10)
+            self.clock.tick(20)
 
     def handle_input(self):
         mouse_pos = pygame.mouse.get_pos()
