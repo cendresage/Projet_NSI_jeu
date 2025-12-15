@@ -58,6 +58,9 @@ class Game:
 
     def run(self):
         while self.running:
+            if self.Player.hp <= 0:
+                return "game_over"
+                
             self.handle_input()
 
             for enemy in self.enemy_group:
@@ -66,14 +69,22 @@ class Game:
                     self.map.group.add(new_bullet)
                     self.enemy_bullets.add(new_bullet)
 
-            all_bullets = self.player_bullets.copy()
-            all_bullets.add(self.enemy_bullets)
-
-            hits = pygame.sprite.groupcollide(self.enemy_group, self.player_bullets, False, True, collided=self.check_collision_hitbox)
+            hits = pygame.sprite.groupcollide(
+                self.enemy_group, 
+                self.player_bullets, 
+                False, 
+                True,  
+                collided=self.check_collision_hitbox 
+            )
             for enemy in hits:
                 enemy.damage(1)
 
-            hits_player = pygame.sprite.spritecollide(self.Player, self.enemy_bullets, True, collided=self.check_collision_hitbox)
+            hits_player = pygame.sprite.spritecollide(
+                self.Player, 
+                self.enemy_bullets, 
+                True, 
+                collided=self.check_collision_hitbox
+            )
             for bullet in hits_player:
                 self.Player.damage(1)
 
@@ -81,15 +92,17 @@ class Game:
             all_bullets.add(self.enemy_bullets)
 
             self.map.update(all_bullets)
-
+            
             self.draw_hud()
-
+            
             camera_pos = self.map.group.view.topleft
             map_zoom = self.map.map_layer.zoom
             for enemy in self.enemy_group:
                 enemy.draw_health_bar(self.screen.get_display(), camera_pos, map_zoom)
-
+            
             self.screen.update()
+        
+        return "quit"
 
     def check_collision_hitbox(self, sprite1, sprite2):
         return sprite1.hitbox.colliderect(sprite2.hitbox)
