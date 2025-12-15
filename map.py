@@ -38,6 +38,14 @@ class Map:
                     type, obj.name.split(" ")[1], pygame.Rect(obj.x, obj.y, obj.width, obj.height), int(obj.name.split(" ")[-1])
                 ))
 
+        if self.player:
+            self.pose_player(switch)
+            self.player.align_hitbox()
+            self.player.add_switchs(self.switchs)
+            self.group.add(self.player)
+        
+        self.current_map = switch
+
 
     def add_player(self, player):
         self.group.add(player)
@@ -49,6 +57,7 @@ class Map:
         if self.player:
             if self.player.change_map:
                 self.switch_map(self.player.change_map)
+                self.player.change_map = None
         self.group.update()
         screen_width, screen_height = self.screen.get_size()
         visible_rect = pygame.Rect(0,0, screen_width, screen_height)
@@ -62,3 +71,8 @@ class Map:
                 
         self.group.center(self.player.rect.center)                                                    # Centrer le joueur
         self.group.draw(self.screen.get_display())
+
+
+    def pose_player(self, switch: Switch):
+        position = self.tmx_data.get_object_by_name("spawn " + self.current_map.name + " " + str(switch.port))
+        self.player.position = pygame.math.Vector2(position.x, position.y)

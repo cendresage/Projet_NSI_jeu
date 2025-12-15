@@ -72,11 +72,11 @@ class Player(Entity):
                 print("Game Over")  # game over à gérer plus tard
 
 
-    def add_switch(self, switch : list[Switch]):
-        self.switchs = switchs 
+    def add_switchs(self, switch : list[Switch]):
+        self.switchs = switch
 
     def check_collisions_switchs(self, temp_hitbox):
-        if self.swiths:
+        if self.switchs:
             for switch in self.switchs:
                 if switch.check_collision(self.hitbox):
                     self.change_map = switch

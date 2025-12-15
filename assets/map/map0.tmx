@@ -6,10 +6,9 @@
  <tileset firstgid="1314" source="Death animation.tsx"/>
  <group id="13" name="objet">
   <objectgroup id="10" name="Interface">
-   <object id="1" x="736" y="70.5"/>
-   <object id="3" x="736" y="64" height="16"/>
+   <object id="3" name="switch map2 0" x="736" y="64" height="16"/>
    <object id="4" name="switch map2 0" x="720" y="64" width="32" height="16"/>
-   <object id="5" name="spawn map2 0" x="736.375" y="91.875">
+   <object id="5" name="spawn map2 0" x="736.436" y="115.239">
     <point/>
    </object>
   </objectgroup>
