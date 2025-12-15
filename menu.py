@@ -7,6 +7,9 @@ ZOOM = 2
 BACKGROUND_PATH = "Image/Image de fond.png"
 BUTTON_IMG_PATH = "Sprites/ATH/spr_banner_hud.png"
 
+GAMEOVER_IMG_1 = "Image/gameOver1.png"
+GAMEOVER_IMG_2 = "Image/gameOver2.png"
+
 WHITE = (255, 255, 255)
 GOLD = (255, 215, 0)
 BLACK = (0, 0, 0)
@@ -133,3 +136,43 @@ class Menu:
 
             pygame.display.flip()
             self.clock.tick(60)
+
+
+class GameOverMenu:
+    def __init__(self):
+        self.screen_obj = Screen()
+        self.screen = self.screen_obj.get_display()
+        self.running = True
+        self.clock = pygame.time.Clock()
+
+        self.image = [
+            pygame.image.load(GAMEOVER_IMG_1).convert(),
+            pygame.image.load(GAMEOVER_IMG_2).convert()
+        ]
+
+        self.images = [
+            pygame.transform.scale(img, (self.screen.get_width(), self.screen.get_height()))
+            for img in self.image
+        ]
+
+        self.current_image_index = 0
+        self.animation_timer = 0
+        self.animation_speed = 500
+
+        center_x = self.screen.get_width() // 2
+        bottom_y = self.screen.get_height() - 100
+        self.btn_exit = Button("Menu", center_x, bottom_y)
+
+    def handle_input(self):
+        mouse_pos = pygame.mouse.get_pos()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.running = False
+                pygame.quit()
+                sys.exit()
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    if self.btn_menu.rect.collidepoint(mouse_pos):
+                        return "menu"
+                
