@@ -29,18 +29,17 @@ class Entity(pygame.sprite.Sprite):
     def update(self):
         self.animation_sprite()
         self.move()
-        self.rect.center = self.position
-        self.hitbox.midbottom = self.rect.midbottom                                         # Mise à jour de la hitbox ( au niveau du corp de l'entité )
+        self.rect.center = self.position                                        # Mise à jour de la hitbox ( au niveau du corp de l'entité )
         
         # --- POSITIONNEMENT PIXEL PERFECT ---
         # 1. On place la hitbox en bas du sprite (aux pieds)
         self.hitbox.midbottom = self.rect.midbottom
         
         # 2. On remonte de 2 pixels pour ne pas être "dans" le sol
-        self.hitbox.y -= 2
+        self.hitbox.centerx = self.rect.centerx
         
         # 3. On déplace la hitbox vers la gauche
-        self.hitbox.x -= 2 
+        self.hitbox.bottom = self.rect.bottom 
         # ------------------------------------
 
         self.image = self.all_images[self.direction][self.index_image]
