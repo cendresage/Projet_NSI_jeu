@@ -20,6 +20,7 @@ class Map:
 
         self.player: Player = None
         self.switchs: list[Switch]
+        self.collision: list[pygame.Rect] | None = None
 
         self.map_layer_config = {
             "map0": 6,
@@ -56,8 +57,11 @@ class Map:
         self.group = pyscroll.PyscrollGroup(map_layer=self.map_layer, default_layer=layer_index)
 
         self.switchs = []
+        self.collisions = []
 
         for obj in self.tmx_data.objects:
+            if obj.name == "collision":
+                self.collisions.append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
             # Petite sécurité si un objet n'a pas de nom dans Tiled
             if obj.name is None: continue 
             
@@ -69,10 +73,12 @@ class Map:
 
         self.spawn_enemies()
 
+# Code à optimiser ici
         if self.player:
             self.pose_player(switch)
             self.player.align_hitbox()
             self.player.add_switchs(self.switchs)
+            self.player.add_collisions(self.collisions)
 
             if hasattr(self.player, "_layer"):
                 del self.player._layer
@@ -107,6 +113,7 @@ class Map:
         self.player = player
         self.player.align_hitbox()
         self.player.add_switchs(self.switchs)
+        self.player.add_collisions(self.collisions)
         self.spawn_enemies()
 
     def update(self, bullet_group: pygame.sprite.Group):
@@ -132,3 +139,5 @@ class Map:
     def pose_player(self, switch: Switch):
         position = self.tmx_data.get_object_by_name("spawn " + self.current_map.name + " " + str(switch.port))
         self.player.position = pygame.math.Vector2(position.x, position.y)
+
+

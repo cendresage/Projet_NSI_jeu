@@ -14,7 +14,8 @@ class Player(Entity):
         self.hp = 3
         self.max_hp = 3
 
-        self.switchs: list[Switch]
+        self.switchs: list[Switch] | None = None
+        self.collisions: list[pygame.Rect] | None = None
         self.change_map: Switch | None = None
 
     def update(self):
@@ -26,20 +27,24 @@ class Player(Entity):
             temp_hitbox = self.hitbox.copy()
             if self.keylistener.key_pressed(pygame.K_q) or self.keylistener.key_pressed(pygame.K_LEFT):
                 temp_hitbox.x -= 16
-                self.check_collisions_switchs(temp_hitbox)
-                self.move_left()
+                if self.check_collisions(temp_hitbox):
+                    self.check_collisions_switchs(temp_hitbox)
+                    self.move_left()
             elif self.keylistener.key_pressed(pygame.K_d) or self.keylistener.key_pressed(pygame.K_RIGHT):
                 temp_hitbox.x += 16
-                self.check_collisions_switchs(temp_hitbox)
-                self.move_right()
+                if self.check_collisions(temp_hitbox):
+                    self.check_collisions_switchs(temp_hitbox)
+                    self.move_right()
             elif self.keylistener.key_pressed(pygame.K_z) or self.keylistener.key_pressed(pygame.K_UP):
                 temp_hitbox.y -= 16
-                self.check_collisions_switchs(temp_hitbox)
-                self.move_up()
+                if self.check_collisions(temp_hitbox):
+                    self.check_collisions_switchs(temp_hitbox)
+                    self.move_up()
             elif self.keylistener.key_pressed(pygame.K_s) or self.keylistener.key_pressed(pygame.K_DOWN):
                 temp_hitbox.y += 16
-                self.check_collisions_switchs(temp_hitbox)
-                self.move_down()
+                if self.check_collisions(temp_hitbox):
+                    self.check_collisions_switchs(temp_hitbox)
+                    self.move_down()
             
             
 
@@ -81,3 +86,13 @@ class Player(Entity):
                 if switch.check_collision(self.hitbox):
                     self.change_map = switch
         return None
+
+
+    def add_collisions(self, collisions):
+            self.collisions = collisions
+
+    def check_collisions(self, temp_hitbox: pygame.Rect):
+        for collision in self.collisions:
+            if temp_hitbox.colliderect(collision):
+                return False
+        return True
