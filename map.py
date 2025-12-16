@@ -1,15 +1,19 @@
 import pygame
 import pytmx
 import pyscroll
+import json
+import os
 
 from screen import Screen
 from player import Player
 from switch import Switch
+from enemy import Enemy
 
 
 class Map:
-    def __init__(self, screen: Screen):
+    def __init__(self, screen: Screen, enemy_group: pygame.sprite.Group):
         self.screen = screen
+        self.enemy_group = enemy_group
         self.tmx_data = None
         self.map_layer = None
         self.group = None
@@ -17,26 +21,51 @@ class Map:
         self.player: Player = None
         self.switchs: list[Switch]
 
+        self.map_layer_config = {
+            "map0": 6,
+            "map2": 7
+        }
+
+        self.spawn_data = self.load_spawn_data()
+
         self.current_map = Switch("switch", "map0", pygame.Rect(0, 0, 0, 0), 0)
 
         self.switch_map(self.current_map)
 
+    def load_spawn_data(self):
+        path = "assets/data/spawns.json"
+        if os.path.exists(path):
+            with open(path, "r") as f:
+                return json.load(f)
+        else:
+            print(f"Erreur: Fichier {path} introuvable.")
+            return {}
+
 
     def switch_map(self, switch: Switch):
+        self.current_map_name = switch.name
         self.tmx_data = pytmx.load_pygame(f"assets/map/{switch.name}.tmx")
         map_data = pyscroll.data.TiledMapData(self.tmx_data)
         self.map_layer = pyscroll.BufferedRenderer(map_data, self.screen.get_size())
         self.map_layer.zoom = 3                                                                      # Zoom
+        
+        layer_index = self.map_layer_config.get(self.current_map_name, 6)
+
         self.group = pyscroll.PyscrollGroup(map_layer=self.map_layer, default_layer=6)
 
         self.switchs = []
 
         for obj in self.tmx_data.objects:
+            # Petite sécurité si un objet n'a pas de nom dans Tiled
+            if obj.name is None: continue 
+            
             type = obj.name.split(" ")[0]
             if type == "switch":
                 self.switchs.append(Switch(
                     type, obj.name.split(" ")[1], pygame.Rect(obj.x, obj.y, obj.width, obj.height), int(obj.name.split(" ")[-1])
                 ))
+
+        self.spawn_enemies()
 
         if self.player:
             self.pose_player(switch)
@@ -47,11 +76,29 @@ class Map:
         self.current_map = switch
 
 
+    def spawn_enemies(self):
+        self.enemy_group.empty()
+
+        if self.current_map_name in self.spawn_data:
+            enemies_list = self.spawn_data[self.current_map_name]
+
+            for enemy_info in enemies_list:
+                if self.player:
+                    x = enemy_info["x"]
+                    y = enemy_info["y"]
+                    hp = enemy_info.get("hp", 2)
+
+                    new_enemy = Enemy(self.screen, self.player, x, y, max_hp=hp)
+                    self.group.add(new_enemy)
+                    self.enemy_group.add(new_enemy)
+
+
     def add_player(self, player):
         self.group.add(player)
         self.player = player
         self.player.align_hitbox()
         self.player.add_switchs(self.switchs)
+        self.spawn_enemies()
 
     def update(self, bullet_group: pygame.sprite.Group):
         if self.player:

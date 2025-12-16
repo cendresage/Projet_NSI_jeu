@@ -145,11 +145,13 @@ class GameOverMenu:
         self.running = True
         self.clock = pygame.time.Clock()
 
+        # Chargement des images
         self.image = [
             pygame.image.load(GAMEOVER_IMG_1).convert(),
             pygame.image.load(GAMEOVER_IMG_2).convert()
         ]
 
+        # Mise à l'échelle
         self.images = [
             pygame.transform.scale(img, (self.screen.get_width(), self.screen.get_height()))
             for img in self.image
@@ -162,6 +164,25 @@ class GameOverMenu:
         center_x = self.screen.get_width() // 2
         bottom_y = self.screen.get_height() - 100
         self.btn_menu = Button("Menu", center_x, bottom_y)
+
+    def draw(self):
+        """ Méthode dédié au dessin pour être réutilisée dans le fondu"""
+
+        self.screen.blit(self.images[self.current_image_index], (0, 0))
+        self.btn_menu.draw(self.screen)
+
+
+    def fade_in(self):
+        fade_surface = pygame.Surface(self.screen.get_size())
+        fade_surface.fill((0, 0, 0))
+
+        for alpha in range(255, 0,-5):
+            fade_surface.set_alpha(alpha)
+            
+            self.draw()
+            self.screen.blit(fade_surface, (0, 0))
+            pygame.display.flip()
+            self.clock.tick(20)
 
     def handle_input(self):
         mouse_pos = pygame.mouse.get_pos()
@@ -180,6 +201,8 @@ class GameOverMenu:
         return None
 
     def run(self):
+        self.fade_in()
+
         while self.running:
             action = self.handle_input()
             if action == "menu":
@@ -190,8 +213,7 @@ class GameOverMenu:
                 self.current_image_index = (self.current_image_index + 1) % len(self.images)
                 self.animation_timer = current_time
             
-            self.screen.blit(self.images[self.current_image_index], (0, 0))
-            self.btn_menu.draw(self.screen)
+            self.draw()
 
             pygame.display.flip()
             self.clock.tick(60)
