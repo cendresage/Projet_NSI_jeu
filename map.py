@@ -23,7 +23,7 @@ class Map:
 
         self.map_layer_config = {
             "map0": 6,
-            "map2": 7
+            "map2": 8
         }
 
         self.spawn_data = self.load_spawn_data()
@@ -44,14 +44,16 @@ class Map:
 
     def switch_map(self, switch: Switch):
         self.current_map_name = switch.name
+        print(f"Chargement de la carte : {self.current_map_name}")
         self.tmx_data = pytmx.load_pygame(f"assets/map/{switch.name}.tmx")
         map_data = pyscroll.data.TiledMapData(self.tmx_data)
         self.map_layer = pyscroll.BufferedRenderer(map_data, self.screen.get_size())
         self.map_layer.zoom = 3                                                                      # Zoom
         
         layer_index = self.map_layer_config.get(self.current_map_name, 6)
+        print(f" Calque par défaut défini sur : {layer_index}")
 
-        self.group = pyscroll.PyscrollGroup(map_layer=self.map_layer, default_layer=6)
+        self.group = pyscroll.PyscrollGroup(map_layer=self.map_layer, default_layer=layer_index)
 
         self.switchs = []
 
@@ -71,6 +73,10 @@ class Map:
             self.pose_player(switch)
             self.player.align_hitbox()
             self.player.add_switchs(self.switchs)
+
+            if hasattr(self.player, "_layer"):
+                del self.player._layer
+
             self.group.add(self.player)
         
         self.current_map = switch
@@ -81,6 +87,7 @@ class Map:
 
         if self.current_map_name in self.spawn_data:
             enemies_list = self.spawn_data[self.current_map_name]
+            print(f"-> Spawning {len(enemies_list)} ennemis pour {self.current_map_name}")
 
             for enemy_info in enemies_list:
                 if self.player:
@@ -91,6 +98,8 @@ class Map:
                     new_enemy = Enemy(self.screen, self.player, x, y, max_hp=hp)
                     self.group.add(new_enemy)
                     self.enemy_group.add(new_enemy)
+
+        print(f"-> Aucune donnée de spawn trouvée pour {self.current_map_name} dans le JSON")
 
 
     def add_player(self, player):
