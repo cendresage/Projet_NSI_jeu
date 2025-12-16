@@ -6,7 +6,7 @@ from tool import Tool
 from bullet import Bullet
 
 class Enemy(Entity):
-    def __init__(self, screen, player, x, y, max_hp=2):
+    def __init__(self, screen, player, x, y, max_hp=2, points=10):
         super().__init__(None, screen, x, y)
 
         self.player = player
