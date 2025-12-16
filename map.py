@@ -131,7 +131,12 @@ class Map:
         for bullet in bullet_group.copy():
             if not bullet.hitbox.colliderect(out_of_bounds_rect):
                 bullet.kill()
-                
+                continue                #On passe à la balle suivante
+
+            if bullet.hitbox.collidelist(self.collisions) > -1:
+                bullet.kill()
+
+
         self.group.center(self.player.rect.center)                                                    # Centrer le joueur
         self.group.draw(self.screen.get_display())
 
