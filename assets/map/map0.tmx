@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="16" tileheight="16" infinite="0" nextlayerid="15" nextobjectid="259">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="16" tileheight="16" infinite="0" nextlayerid="15" nextobjectid="260">
  <tileset firstgid="1" source="jsp.tsx"/>
  <tileset firstgid="769" source="garden.tsx"/>
  <tileset firstgid="1242" source="2Crate.tsx"/>
@@ -157,7 +157,7 @@
    <object id="217" name="collision" x="752" y="48" width="16" height="16"/>
    <object id="218" name="collision" x="768" y="48" width="48" height="16"/>
    <object id="219" name="collision" x="656" y="48" width="64" height="16"/>
-   <object id="220" name="collision" x="720" y="48" width="32" height="16"/>
+   <object id="220" name="collision" x="719.818" y="32.7273" width="32" height="16"/>
    <object id="223" name="collision" x="224" y="592" width="16" height="16"/>
    <object id="224" name="collision" x="64" y="576" width="16" height="16"/>
    <object id="225" name="collision" x="128" y="512" width="16" height="16"/>
@@ -193,9 +193,9 @@
    <object id="257" name="collision" x="752" y="96" width="16" height="16"/>
    <object id="258" name="collision" x="96" y="48" width="16" height="16"/>
   </objectgroup>
-  <objectgroup id="10" name="Interface" visible="0">
+  <objectgroup id="10" name="Interface">
    <object id="3" name="switch map2 0" x="736" y="64" height="16"/>
-   <object id="4" name="switch map2 0" x="720" y="64" width="32" height="16"/>
+   <object id="4" name="switch map2 0" x="719.818" y="79.0909" width="32" height="16"/>
    <object id="5" name="spawn map2 0" x="724.072" y="81.4205">
     <point/>
    </object>
