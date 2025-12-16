@@ -3,10 +3,23 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "",
+    "activeFile": "map2.tmx",
     "expandedProjectPaths": [
+        "."
     ],
     "fileStates": {
+        "2Crate.tsx": {
+            "scaleInDock": 1
+        },
+        "Death animation.tsx": {
+            "scaleInDock": 1
+        },
+        "Tilemap Dungeon original size.tsx": {
+            "scaleInDock": 1
+        },
+        "garden.tsx": {
+            "scaleInDock": 1
+        },
         "jsp.tsx": {
             "scaleInDock": 1,
             "scaleInEditor": 1
@@ -17,25 +30,31 @@
                 11
             ],
             "expandedObjectLayers": [
+                10,
                 13,
-                10
+                14
             ],
-            "scale": 0.25,
-            "selectedLayer": 0,
+            "scale": 5.5,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 402,
-                "y": 712
+                "x": 733.2727272727273,
+                "y": 68.36363636363636
             }
         },
         "map2.tmx": {
             "expandedGroupLayers": [
                 11
             ],
-            "scale": 0.33,
-            "selectedLayer": 9,
+            "expandedObjectLayers": [
+                12,
+                13,
+                11
+            ],
+            "scale": 3,
+            "selectedLayer": 10,
             "viewCenter": {
-                "x": 392.42424242424244,
-                "y": 869.6969696969696
+                "x": 68,
+                "y": 53
             }
         }
     },
@@ -46,10 +65,13 @@
     "map.tileWidth": 16,
     "map.width": 100,
     "openFiles": [
+        "map0.tmx",
+        "map2.tmx"
     ],
     "project": "map0.tiled-project",
     "recentFiles": [
         "map0.tmx",
+        "map2.tmx",
         "jsp.tsx"
     ],
     "tileset.lastUsedFormat": "tsx",

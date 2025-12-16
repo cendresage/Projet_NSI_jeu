@@ -26,7 +26,7 @@ class Player(Entity):
     def update(self):
         self.check_input()
         super().update()
-        self.check_collision_switchs
+        self.check_collision_switchs()
         self.check_attack_state()
 
 
@@ -72,9 +72,11 @@ class Player(Entity):
 
     
     def check_collision_switchs(self):
-        for switch in self.switchs:
-            if self.hitbox.colliderect(switch.rect):
-                self.change_map = switch
+        # On vérifie que la liste existe pour éviter un crash si elle est None
+        if self.switchs: 
+            for switch in self.switchs:
+                if self.hitbox.colliderect(switch.hitbox):
+                    self.change_map = switch
             
             
 
