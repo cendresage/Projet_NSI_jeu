@@ -41,7 +41,7 @@ class Enemy(Entity):
         self.shoot_cooldown = 1900
 
         self.max_hp = max_hp
-        self.hp = 2
+        self.hp = max_hp
 
 
     
