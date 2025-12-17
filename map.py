@@ -101,7 +101,7 @@ class Map:
                     y = enemy_info["y"]
                     hp = enemy_info.get("hp", 2)
 
-                    points = enemy_info.get("points")
+                    points = enemy_info.get("points", 10)
 
                     new_enemy = Enemy(self.screen, self.player, x, y, max_hp=hp, points=points)
                     self.group.add(new_enemy)
