@@ -34,7 +34,7 @@ if __name__ == "__main__":
                 break
 
         elif current_state == "game_over":
-            music_manager.play("game_over")z
+            music_manager.play("game_over")
             game_over_menu = GameOverMenu()
             action = game_over_menu.run()
             if action == "menu":
