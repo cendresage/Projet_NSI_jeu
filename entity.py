@@ -39,7 +39,7 @@ class Entity(pygame.sprite.Sprite):
         self.hitbox.centerx = self.rect.centerx
         
         # 3. On déplace la hitbox vers la gauche
-        self.hitbox.bottom = self.rect.bottom 
+        self.hitbox.bottom = self.rect.bottom - 6 
         # ------------------------------------
 
         self.image = self.all_images[self.direction][self.index_image]
@@ -105,16 +105,16 @@ class Entity(pygame.sprite.Sprite):
 
 
     def align_hitbox(self):
-        self.position.x += 15
-        self.position.y += 32
         self.rect.center = self.position
-        self.hitbox.midbottom = self.rect.midbottom
-        while self.hitbox.x % 16 != 0:                                           # Alignement de la hitbox ( si l'entité n'est pas sur une ligne noir )
-            self.rect.x -= 1                                                     # On bouge l'entité vers la gauche
-            self.hitbox.midbottom = self.rect.midbottom                          # Mise à jour de la hitbox pour terminer la boucle while
+        self.hitbox.centerx = self.rect.centerx
+        self.hitbox.bottom = self.rect.bottom - 6
+        
+        while self.hitbox.x % 16 != 0:
+            self.rect.x -= 1
+            self.hitbox.x -= 1
         while self.hitbox.y % 16 != 0:
             self.rect.y   -= 1
-            self.hitbox.midbottom = self.rect.midbottom
+            self.hitbox.y -= 1
         self.position = pygame.math.Vector2(self.rect.center)                     # Mise à jour de l'entité aligner sur la grille
 
     def get_all_images(self):
