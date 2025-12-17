@@ -155,7 +155,7 @@
    <object id="217" name="collision" x="752" y="48" width="16" height="16"/>
    <object id="218" name="collision" x="768" y="48" width="48" height="16"/>
    <object id="219" name="collision" x="656" y="48" width="64" height="16"/>
-   <object id="220" name="collision" x="720" y="48" width="32" height="16"/>
+   <object id="220" name="collision" x="719.818" y="32.7273" width="32" height="16"/>
    <object id="223" name="collision" x="224" y="592" width="16" height="16"/>
    <object id="224" name="collision" x="64" y="576" width="16" height="16"/>
    <object id="225" name="collision" x="128" y="512" width="16" height="16"/>
@@ -194,7 +194,7 @@
   </objectgroup>
   <objectgroup id="10" name="Interface">
    <object id="3" name="switch map2 0" x="736" y="64" height="16"/>
-   <object id="4" name="switch map2 0" x="720" y="64" width="32" height="16"/>
+   <object id="4" name="switch map2 0" x="720.545" y="63.4545" width="32" height="16"/>
    <object id="5" name="spawn map2 0" x="724.072" y="81.4205">
     <point/>
    </object>

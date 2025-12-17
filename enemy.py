@@ -6,7 +6,7 @@ from tool import Tool
 from bullet import Bullet
 
 class Enemy(Entity):
-    def __init__(self, screen, player, x, y, max_hp=2):
+    def __init__(self, screen, player, x, y, max_hp=2, points=10):
         super().__init__(None, screen, x, y)
 
         self.player = player
@@ -175,4 +175,4 @@ class Enemy(Entity):
         else:
             bullet_dir = direction_vector.normalize()
             
-        return Bullet(self.position.x, self.position.y, bullet_dir, 3, pygame.image.load("Sprites/Bullet/Enemy_bullet.png"))
+        return Bullet(self.position.x, self.position.y, bullet_dir, 5, pygame.image.load("Sprites/Bullet/Enemy_bullet.png"))

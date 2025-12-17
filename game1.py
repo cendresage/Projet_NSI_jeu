@@ -112,17 +112,25 @@ class Game:
         for event in pygame.event.get():                # Gestion des évènements (récupère les touches pressées)
             if event.type == pygame.QUIT:
                 pygame.quit()
+                exit()
             elif event.type == pygame.KEYDOWN:
                 self.keylistener.add_key(event.key)
             elif event.type == pygame.KEYUP:
                 self.keylistener.remove_key(event.key)
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:                   # Bouton gauche de la souris
-                    new_bullet = self.Player.fire()
+                    screen_mouse_x, screen_mouse_y = pygame.mouse.get_pos()
+
+                    camera_x, camera_y = self.map.group.view.topleft
+                    zoom = self.map.map_layer.zoom
+
+                    world_mouse_x = (screen_mouse_x / zoom) + camera_x
+                    world_mouse_y = (screen_mouse_y / zoom) + camera_y
+
+                    new_bullet = self.Player.fire(world_mouse_x, world_mouse_y)
                     self.player_bullets.add(new_bullet)
                     self.map.group.add(new_bullet)
-
-
+                    
     def draw_hud(self):
         display = self.screen.get_display()
 
