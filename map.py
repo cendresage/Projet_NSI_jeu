@@ -104,6 +104,7 @@ class Map:
                     points = enemy_info.get("points", 10)
 
                     new_enemy = Enemy(self.screen, self.player, x, y, max_hp=hp, points=points)
+                    new_enemy.add_walls(self.collisions)
                     self.group.add(new_enemy)
                     self.enemy_group.add(new_enemy)
 
