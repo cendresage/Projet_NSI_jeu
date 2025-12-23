@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="16" tileheight="16" infinite="0" nextlayerid="14" nextobjectid="252">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="16" tileheight="16" infinite="0" nextlayerid="14" nextobjectid="253">
  <tileset firstgid="1" source="jsp.tsx"/>
  <tileset firstgid="769" source="garden.tsx"/>
  <tileset firstgid="1242" source="Tilemap Dungeon original size.tsx"/>
@@ -843,7 +843,6 @@
    <object id="17" name="collision" x="16" y="96" width="16" height="16"/>
    <object id="19" name="collision" x="80" y="16" width="80" height="64"/>
    <object id="22" name="collision" x="144" y="80" width="16" height="16"/>
-   <object id="23" name="collision" x="0" y="0"/>
    <object id="24" name="collision" x="144" y="0" width="32" height="16"/>
    <object id="25" name="collision" x="0" y="80" width="16" height="208"/>
    <object id="26" name="collision" x="160" y="64" width="16" height="16"/>
@@ -858,7 +857,7 @@
    <object id="35" name="collision" x="352" y="416" width="32" height="16"/>
    <object id="37" name="collision" x="512" y="368" width="32" height="16"/>
    <object id="38" name="collision" x="544" y="128" width="32" height="16"/>
-   <object id="39" name="collision" x="336" y="64" width="48" height="48"/>
+   <object id="39" name="collision1" x="336" y="64" width="48" height="48"/>
    <object id="40" name="collision" x="256" y="640" width="32" height="16"/>
    <object id="41" name="collision" x="80" y="656" width="32" height="16"/>
    <object id="42" name="collision" x="448" y="544" width="32" height="16"/>
@@ -869,7 +868,7 @@
    <object id="47" name="collision" x="320" y="816" width="32" height="16"/>
    <object id="48" name="collision" x="80" y="848" width="32" height="16"/>
    <object id="49" name="collision" x="176" y="752" width="32" height="16"/>
-   <object id="50" name="collision" x="432" y="784" width="112" height="112"/>
+   <object id="50" name="collision1" x="432" y="784" width="112" height="112"/>
    <object id="51" name="collision" x="384" y="768" width="32" height="32"/>
    <object id="52" name="collision" x="544" y="832" width="32" height="32"/>
    <object id="53" name="collision" x="640" y="864" width="32" height="16"/>
@@ -910,35 +909,35 @@
    <object id="90" name="collision" x="912" y="1440" width="16" height="16"/>
    <object id="91" name="collision" x="928" y="1344" width="16" height="16"/>
    <object id="92" name="collision" x="624" y="1520" width="64" height="16"/>
-   <object id="93" name="collision" x="592" y="1264" width="16" height="320"/>
-   <object id="94" name="collision" x="544" y="1264" width="16" height="320"/>
-   <object id="95" name="collision" x="544" y="1264" width="64" height="16"/>
-   <object id="100" name="collision" x="608" y="1264" width="112" height="16"/>
-   <object id="101" name="collision" x="608" y="1056" width="112" height="224"/>
-   <object id="102" name="collision" x="720" y="1072" width="32" height="16"/>
-   <object id="103" name="collision" x="672" y="1040" width="80" height="32"/>
-   <object id="104" name="collision" x="672" y="976" width="80" height="48"/>
-   <object id="105" name="collision" x="752" y="928" width="64" height="48"/>
-   <object id="106" name="collision" x="720" y="928" width="48" height="48"/>
-   <object id="107" name="collision" x="752" y="816" width="96" height="96"/>
-   <object id="108" name="collision" x="752" y="912" width="16" height="16"/>
-   <object id="110" name="collision" x="752" y="800" width="48" height="16"/>
-   <object id="111" name="collision" x="704" y="704" width="80" height="96"/>
-   <object id="112" name="collision" x="672" y="672" width="128" height="16"/>
+   <object id="93" name="collision1" x="592" y="1264" width="16" height="320"/>
+   <object id="94" name="collision1" x="544" y="1264" width="16" height="320"/>
+   <object id="95" name="collision1" x="544" y="1264" width="64" height="16"/>
+   <object id="100" name="collision1" x="608" y="1264" width="112" height="16"/>
+   <object id="101" name="collision1" x="608" y="1056" width="112" height="224"/>
+   <object id="102" name="collision1" x="720" y="1072" width="32" height="16"/>
+   <object id="103" name="collision1" x="672" y="1040" width="80" height="32"/>
+   <object id="104" name="collision1" x="672" y="976" width="80" height="48"/>
+   <object id="105" name="collision1" x="752" y="928" width="64" height="48"/>
+   <object id="106" name="collision1" x="720" y="928" width="48" height="48"/>
+   <object id="107" name="collision1" x="752" y="816" width="96" height="96"/>
+   <object id="108" name="collision1" x="752" y="912" width="16" height="16"/>
+   <object id="110" name="collision1" x="752" y="800" width="48" height="16"/>
+   <object id="111" name="collision1" x="704" y="704" width="80" height="96"/>
+   <object id="112" name="collision1" x="672" y="672" width="128" height="16"/>
    <object id="113" name="collision" x="672" y="672" height="16"/>
-   <object id="114" name="collision" x="832" y="912" width="16" height="16"/>
-   <object id="115" name="collision" x="672" y="688" width="128" height="16"/>
-   <object id="116" name="collision" x="704" y="800" width="48" height="16"/>
-   <object id="117" name="collision" x="816" y="912" width="32" height="16"/>
-   <object id="118" name="collision" x="752" y="976" width="64" height="16"/>
-   <object id="119" name="collision" x="720" y="1088" width="32" height="16"/>
-   <object id="120" name="collision" x="608" y="1280" width="112" height="16"/>
+   <object id="114" name="collision1" x="832" y="912" width="16" height="16"/>
+   <object id="115" name="collision1" x="672" y="688" width="128" height="16"/>
+   <object id="116" name="collision1" x="704" y="800" width="48" height="16"/>
+   <object id="117" name="collision1" x="816" y="912" width="32" height="16"/>
+   <object id="118" name="collision1" x="752" y="976" width="64" height="16"/>
+   <object id="119" name="collision1" x="720" y="1088" width="32" height="16"/>
+   <object id="120" name="collision1" x="608" y="1280" width="112" height="16"/>
    <object id="122" name="collision" x="784" y="736" width="112" height="16"/>
-   <object id="123" name="collision" x="672" y="352" width="96" height="320"/>
+   <object id="123" name="collision1" x="672" y="352" width="96" height="320"/>
    <object id="124" name="collision" x="752" y="384" width="128" height="16"/>
-   <object id="125" name="collision" x="752" y="320" width="32" height="64"/>
-   <object id="126" name="collision" x="704" y="272" width="96" height="96"/>
-   <object id="127" name="collision" x="704" y="16" width="96" height="256"/>
+   <object id="125" name="collision1" x="752" y="320" width="32" height="64"/>
+   <object id="126" name="collision1" x="704" y="272" width="96" height="96"/>
+   <object id="127" name="collision1" x="704" y="16" width="96" height="256"/>
    <object id="129" name="collision" x="736" y="1536" width="16" height="16"/>
    <object id="130" name="collision" x="896" y="1536" width="16" height="16"/>
    <object id="131" name="collision" x="1024" y="1504" width="16" height="16"/>
@@ -1043,10 +1042,11 @@
    <object id="249" name="collision" x="176" y="0" width="640" height="16"/>
    <object id="250" x="16" y="16" width="64" height="48"/>
    <object id="251" x="16" y="64" width="32" height="16"/>
+   <object id="252" name="collision" x="480" y="832" width="32" height="32"/>
   </objectgroup>
   <objectgroup id="12" name="interface">
    <object id="1" name="switch map0 0" x="47" y="80.3333" width="32" height="16"/>
-   <object id="2" name="spawn map0 0" x="48.8409" y="96.2954">
+   <object id="2" name="spawn map0 0" x="51.0909" y="113.795">
     <point/>
    </object>
   </objectgroup>

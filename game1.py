@@ -28,7 +28,7 @@ class Game:
         self.map = Map(self.screen, self.enemy_group)
         
         # 3. Création du joueur et ajout à la map
-        self.Player = Player(self.keylistener, self.screen, 100, 100)
+        self.Player = Player(self.keylistener, self.screen, 92, 1521)
         self.map.add_player(self.Player)
         
         pygame.font.init()

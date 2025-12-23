@@ -58,10 +58,15 @@ class Map:
 
         self.switchs = []
         self.collisions = []
+        self.water_collisions = []
 
         for obj in self.tmx_data.objects:
             if obj.name == "collision":
                 self.collisions.append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
+
+            if obj.name == "collision1":
+                self.water_collisions.append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
+            
             # Petite sécurité si un objet n'a pas de nom dans Tiled
             if obj.name is None: continue 
             
@@ -78,7 +83,7 @@ class Map:
             self.pose_player(switch)
             self.player.align_hitbox()
             self.player.add_switchs(self.switchs)
-            self.player.add_collisions(self.collisions)
+            self.player.add_collisions(self.collisions + self.water_collisions)
 
             if hasattr(self.player, "_layer"):
                 del self.player._layer
@@ -116,7 +121,7 @@ class Map:
         self.player = player
         self.player.align_hitbox()
         self.player.add_switchs(self.switchs)
-        self.player.add_collisions(self.collisions)
+        self.player.add_collisions(self.collisions + self.water_collisions)
         self.spawn_enemies()
 
     def update(self, bullet_group: pygame.sprite.Group):
