@@ -1046,7 +1046,7 @@
   </objectgroup>
   <objectgroup id="12" name="interface">
    <object id="1" name="switch map0 0" x="47" y="80.3333" width="32" height="16"/>
-   <object id="2" name="spawn map0 0" x="51.0909" y="113.795">
+   <object id="2" name="spawn map0 0" x="80" y="144">
     <point/>
    </object>
   </objectgroup>

@@ -109,11 +109,24 @@ class Map:
                     points = enemy_info.get("points", 10)
 
                     new_enemy = Enemy(self.screen, self.player, x, y, max_hp=hp, points=points)
+                    new_enemy.spawn_info = enemy_info
                     new_enemy.add_walls(self.collisions)
                     self.group.add(new_enemy)
                     self.enemy_group.add(new_enemy)
 
         print(f"-> Aucune donnée de spawn trouvée pour {self.current_map_name} dans le JSON")
+
+    
+    def remove_dead_enemy(self, enemy):
+        """Supprime définitivement un ennemi des données de spawn"""
+        if hasattr(enemy, "spawn_info"):
+            # On récupère la liste des spawns de la carte actuelle
+            spawns = self.spawn_data.get(self.current_map_name)
+            
+            # Si la liste existe et que l'info de cet ennemi est dedans, on la supprime
+            if spawns and enemy.spawn_info in spawns:
+                spawns.remove(enemy.spawn_info)
+                print("Ennemi supprimé de la sauvegarde temporaire !")
 
 
     def add_player(self, player):

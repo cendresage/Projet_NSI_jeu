@@ -80,6 +80,19 @@ class Game:
             for enemy in hits:
                 enemy.damage(1)
 
+                if enemy.hp <=0:
+                    self.map.remove_dead_enemy(enemy)
+                    
+            hits = pygame.sprite.groupcollide(
+                self.player_bullets, 
+                self.enemy_group, 
+                True, 
+                False, 
+                collided=self.check_collision_hitbox
+            )
+            for bullet in hits:
+                bullet.kill()
+
             hits_player = pygame.sprite.spritecollide(
                 self.Player, 
                 self.enemy_bullets, 
