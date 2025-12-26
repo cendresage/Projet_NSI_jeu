@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="40" height="40" tilewidth="16" tileheight="16" infinite="0" nextlayerid="7" nextobjectid="27">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="40" height="40" tilewidth="16" tileheight="16" infinite="0" nextlayerid="8" nextobjectid="28">
  <tileset firstgid="1" source="Tilemap Dungeon original size.tsx"/>
  <tileset firstgid="601" source="Death animation.tsx"/>
  <tileset firstgid="617" source="../tileset/garden.tsx"/>
@@ -23,6 +23,11 @@
    <object id="22" name="collision1" x="464" y="528" width="64" height="64"/>
    <object id="23" name="collision1" x="528" y="544" width="64" height="48"/>
    <object id="26" name="collision1" x="560" y="528" width="32" height="64"/>
+  </objectgroup>
+  <objectgroup id="7" name="Interface">
+   <object id="27" name="spawn map2 1" x="336" y="16">
+    <point/>
+   </object>
   </objectgroup>
  </group>
  <group id="4" name="tiled">
