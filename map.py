@@ -110,7 +110,7 @@ class Map:
 
                     new_enemy = Enemy(self.screen, self.player, x, y, max_hp=hp, points=points)
                     new_enemy.spawn_info = enemy_info
-                    new_enemy.add_walls(self.collisions)
+                    new_enemy.add_walls(self.collisions + self.water_collisions)
                     self.group.add(new_enemy)
                     self.enemy_group.add(new_enemy)
 
@@ -164,6 +164,5 @@ class Map:
 
     def pose_player(self, switch: Switch):
         position = self.tmx_data.get_object_by_name("spawn " + self.current_map.name + " " + str(switch.port))
-        self.player.position = pygame.math.Vector2(position.x, position.y)
-
+        self.player.position = pygame.math.Vector2(position.x + 5, position.y + 18)
 
