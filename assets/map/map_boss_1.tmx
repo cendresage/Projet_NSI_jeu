@@ -1,12 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="40" height="40" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="1">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="40" height="40" tilewidth="16" tileheight="16" infinite="0" nextlayerid="7" nextobjectid="181">
  <tileset firstgid="1" source="../tileset/garden.tsx"/>
  <tileset firstgid="474" source="jsp.tsx"/>
  <tileset firstgid="1242" source="Death animation.tsx"/>
  <tileset firstgid="1258" source="2Crate.tsx"/>
  <tileset firstgid="1330" source="Tilemap Dungeon original size.tsx"/>
- <layer id="1" name="sol" width="40" height="40">
-  <data encoding="csv">
+ <group id="5" name="collisions">
+  <objectgroup id="6" name="collisions">
+   <object id="163" name="collision" x="17" y="16" width="346" height="48"/>
+   <object id="164" name="collision" x="289" y="0" width="32" height="32"/>
+   <object id="165" name="collision" x="353" y="0" width="16" height="64"/>
+   <object id="166" name="collision" x="337" y="16" width="288" height="48"/>
+   <object id="167" name="collision" x="561" y="64" width="16" height="16"/>
+   <object id="168" name="collision" x="609" y="16" width="16" height="608"/>
+   <object id="169" name="collision" x="561" y="336" width="64" height="64"/>
+   <object id="170" name="collision" x="17" y="608" width="608" height="16"/>
+   <object id="171" name="collision" x="17" y="16" width="16" height="592"/>
+   <object id="172" name="collision" x="17" y="224" width="64" height="64"/>
+   <object id="173" name="collision" x="81" y="160" width="16" height="32"/>
+   <object id="174" name="collision" x="145" y="96" width="16" height="32"/>
+   <object id="175" name="collision" x="513" y="432" width="16" height="32"/>
+   <object id="176" name="collision" x="577" y="496" width="16" height="16"/>
+   <object id="177" name="collision" x="545" y="512" width="16" height="16"/>
+   <object id="178" name="collision1" x="465" y="528" width="64" height="64"/>
+   <object id="179" name="collision1" x="529" y="544" width="64" height="48"/>
+   <object id="180" name="collision1" x="561" y="528" width="32" height="64"/>
+  </objectgroup>
+ </group>
+ <group id="4" name="tiled">
+  <layer id="1" name="sol" width="40" height="40">
+   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1351,1352,1353,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1369,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1399,
@@ -48,9 +71,9 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1669,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1353,1354,1699
 </data>
- </layer>
- <layer id="2" name="mur" width="40" height="40">
-  <data encoding="csv">
+  </layer>
+  <layer id="2" name="mur" width="40" height="40">
+   <data encoding="csv">
 1339,1340,1341,1342,1343,1344,1345,1346,1347,1348,1349,1350,1351,1352,1353,1351,1352,1353,1373,1374,1375,1376,1377,1339,1340,1339,1340,1341,1342,1343,1344,1345,1346,1347,1348,1349,1350,0,0,0,
 1369,1400,1401,1481,1336,1337,1338,1484,1484,1484,1403,1336,1337,1338,1407,1481,1481,1402,1403,1404,1405,1406,1407,1408,1409,1410,1411,1484,1484,1484,1336,1337,1338,1484,1484,1415,1416,1417,1418,0,
 1399,1430,1431,1511,1366,1367,1368,1514,1514,1514,1433,1366,1367,1368,1437,1511,1511,1432,1433,1434,1435,1436,1437,1438,1439,1440,1441,1514,1514,1514,1366,1367,1368,1514,1514,1445,1446,1447,1448,0,
@@ -92,9 +115,9 @@
 1669,1580,1581,1582,1581,1582,1581,1582,1581,1581,1582,1581,1582,1581,1582,1581,1582,1581,1582,1581,1582,1581,1582,1581,1582,1581,1582,1581,1582,1581,1582,1581,1582,1581,1582,1625,1626,1627,1628,0,
 1699,1339,1340,1341,1342,1343,1344,1345,1346,1347,1348,1349,1350,1351,1352,1353,1354,1339,1340,1341,1342,1343,1344,1339,1340,1341,1342,1343,1344,1345,1346,1347,1348,1349,1350,1351,1352,0,0,0
 </data>
- </layer>
- <layer id="3" name="eau" width="40" height="40">
-  <data encoding="csv">
+  </layer>
+  <layer id="3" name="eau" width="40" height="40">
+   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -136,5 +159,6 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
- </layer>
+  </layer>
+ </group>
 </map>
