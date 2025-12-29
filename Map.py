@@ -117,7 +117,7 @@ class Map:
 
                     new_enemy = Enemy(self.screen, self.player, x, y, max_hp=hp, points=points)
                     new_enemy.spawn_info = enemy_info
-                    new_enemy.add_walls(self.collisions)
+                    new_enemy.add_walls(self.collisions + self.water_collisions)
                     self.group.add(new_enemy)
                     self.enemy_group.add(new_enemy)
 
