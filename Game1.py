@@ -1,11 +1,11 @@
 import pygame
 
-from screen import Screen
-from map import Map
-from entity import Entity
-from keylistener import Keylistener
-from player import Player
-from enemy import Enemy
+from Screen import Screen
+from Map import Map
+from Entity import Entity
+from Keylistener import Keylistener
+from Player import Player
+from Enemy import Enemy
 
 HUD_SCALE = 2
 

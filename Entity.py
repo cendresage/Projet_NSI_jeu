@@ -1,7 +1,7 @@
 import pygame
-from tool import Tool
-from keylistener import Keylistener
-from screen import Screen
+from Tool import Tool
+from Keylistener import Keylistener
+from Screen import Screen
 
 class Entity(pygame.sprite.Sprite):
 

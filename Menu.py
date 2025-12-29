@@ -4,7 +4,7 @@ import json
 import os
 
 
-from screen import Screen
+from Screen import Screen
 
 ZOOM = 2
 

@@ -1,9 +1,9 @@
 import pygame
 import random
-import math
-from entity import Entity
-from tool import Tool
-from bullet import Bullet
+
+from Entity import Entity
+from Tool import Tool
+from Bullet import Bullet
 
 class Enemy(Entity):
     def __init__(self, screen, player, x, y, max_hp=2, points=10):

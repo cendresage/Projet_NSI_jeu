@@ -4,10 +4,10 @@ import pyscroll
 import json
 import os
 
-from screen import Screen
-from player import Player
-from switch import Switch
-from enemy import Enemy
+from Screen import Screen
+from Player import Player
+from Switch import Switch
+from Enemy import Enemy
 
 
 class Map:
