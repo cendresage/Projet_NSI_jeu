@@ -1,4 +1,5 @@
-import pygame 
+import pygame
+
 from Entity import Entity
 from Screen import Screen
 from Keylistener import Keylistener
@@ -24,6 +25,8 @@ class Player(Entity):
         self.attack_stop_duration = 200   # Temps d'immobilisation en ms
         self.pending_shot = None          # Stocke le tir en attente
 
+        self.in_cutscene = False
+
     def update(self):
         self.check_input()
         super().update()
@@ -41,6 +44,10 @@ class Player(Entity):
             
 
     def check_input(self):
+
+        if self.in_cutscene:
+            return
+
         if self.attacking:
             return
 

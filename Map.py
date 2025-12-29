@@ -34,6 +34,10 @@ class Map:
 
         self.switch_map(self.current_map)
 
+        # Variables pour la cutscene du boss
+        self.boss_cutscene_state = 0  # 0 = Rien, 1 = Marche, 2 = Switch, 3 = Dezoom
+        self.cutscene_target_y = 0
+
     def load_spawn_data(self):
         path = "assets/data/spawns.json"
         if os.path.exists(path):
@@ -93,6 +97,11 @@ class Map:
         
         self.current_map = switch
 
+        # Détection de l'entrée dans la map du boss
+        if self.current_map_name == "map_boss_0":
+            print("Début de la cinématique du Boss")
+            self.start_boss_cutscene()
+
 
     def spawn_enemies(self):
         self.enemy_group.empty()
@@ -150,6 +159,43 @@ class Map:
                 self.switch_map(self.player.change_map)
                 self.player.change_map = None
         self.group.update()
+
+        if self.boss_cutscene_state == 1:
+            self.player.move_down()
+
+            # Si on atteint la cible (les 5 blocs)
+            if self.player.position.y >= self.cutscene_target_y:
+                self.player.animation_walk = False
+                self.boss_cutscene_state = 2 # étape suivante
+
+        elif self.boss_cutscene_state == 2: # Switch et son
+            fake_switch = Switch("switch", "map_boss_1", pygame.Rect(0, 0, 0, 0), 0)
+            # On charge la nouvelle map
+            try:
+                slam_sound = pygame.mixer.Sound("...")
+                slam_sound.play()
+
+            except:
+                print("Son de porte introuvable")
+            
+            self.boss_cutscene_state = 3 # On passe au Dezoom
+        
+        elif self.boss_cutscene_state == 3: 
+            if self.map_layer.zoom > 1.0:
+                self.map_layer.zoom -= 0.02     # Vitesse de Dezoom
+            else:
+                self.map_layer.zoom = 1.0
+
+                self.player.in_cutscene = False
+                self.boss_cutscene_state = 0
+
+                try:
+                    pygame.mixer.music.load("...")
+                    pygame.mixer.music.play(-1)
+                except:
+                    print("Musique de boss introuvable")
+
+
         screen_width, screen_height = self.screen.get_size()
         visible_rect = pygame.Rect(0,0, screen_width, screen_height)
         visible_rect.center = self.player.rect.center
@@ -173,3 +219,32 @@ class Map:
         position = self.tmx_data.get_object_by_name("spawn " + self.current_map.name + " " + str(switch.port))
         self.player.position = pygame.math.Vector2(position.x + 5, position.y + 18)
 
+
+    def start_boss_cutscene(self):
+        # On coupe la musique et on bloque le joueur
+        pygame.mixer.music.stop()
+        self.player.in_cutscene = True
+
+        # On calcul où il doit aller ( 5 cases plus bas = 5 * 16 pixels = 80 pixels )
+        self.cutscene_target_y = self.player.position.y + 80
+        self.boss_cutscene_state = 1
+
+
+    def load_boss_arena(self):
+        self.current_map_name = "map_boss_1"
+        self.tmx_data = pytmx.load_pygame("assets/map/map_boss_1.tmx")
+        map_data = pyscroll.data.TiledMapData(self.tmx_data)
+        self.map_layer = pyscroll.BufferedRenderer(map_data, self.screen.get_size())
+        self.map_layer.zoom = 3
+        self.group = pyscroll.PyscrollGroup(map_layer=self.map_layer, default_layer=2)
+        self.collisions =  []
+        self.water_collisions = []
+        for obj in self.tmx_data.objects:
+            if obj.name == "collision":
+                self.collisions.append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
+        for obj in self.tmx_data.objects:
+            if obj.name == "collision1":
+                self.water_collisions.append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
+        self.player.add_collisions(self.collisions + self.water_collisions)
+        self.group.add(self.player)
+        self.spawn_enemies()
