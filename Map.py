@@ -108,7 +108,7 @@ class Map:
 
         if self.current_map_name == "map_boss_1":
             print("ATTENTION : Le Boss Agis apparaît !")
-            boss = Agis(self.screen, self.player, 240, 192)
+            boss = Agis(self.screen, self.player, 192, 144)
             self.group.add(boss)
             self.enemy_group.add(boss)
 
@@ -171,6 +171,7 @@ class Map:
         elif self.boss_cutscene_state == 2: # Switch et son
             fake_switch = Switch("switch", "map_boss_1", pygame.Rect(0, 0, 0, 0), 0)
             # On charge la nouvelle map
+            self.load_boss_arena()
             try:
                 slam_sound = pygame.mixer.Sound("...")
                 slam_sound.play()
@@ -181,10 +182,10 @@ class Map:
             self.boss_cutscene_state = 3 # On passe au Dezoom
         
         elif self.boss_cutscene_state == 3: 
-            if self.map_layer.zoom > 1.0:
+            if self.map_layer.zoom > 2.0:
                 self.map_layer.zoom -= 0.02     # Vitesse de Dezoom
             else:
-                self.map_layer.zoom = 1.0
+                self.map_layer.zoom = 2.0
 
                 self.player.in_cutscene = False
                 self.boss_cutscene_state = 0
@@ -231,20 +232,27 @@ class Map:
 
 
     def load_boss_arena(self):
+        print("--- CHARGEMENT DE L'ARÈNE DU BOSS (map_boss_1) ---")
         self.current_map_name = "map_boss_1"
-        self.tmx_data = pytmx.load_pygame("assets/map/map_boss_1.tmx")
+        
+        self.tmx_data = pytmx.load_pygame(f"assets/map/map_boss_1.tmx")
         map_data = pyscroll.data.TiledMapData(self.tmx_data)
         self.map_layer = pyscroll.BufferedRenderer(map_data, self.screen.get_size())
-        self.map_layer.zoom = 3
-        self.group = pyscroll.PyscrollGroup(map_layer=self.map_layer, default_layer=2)
-        self.collisions =  []
-        self.water_collisions = []
+        self.map_layer.zoom = 3 
+        
+        self.group = pyscroll.PyscrollGroup(map_layer=self.map_layer, default_layer=6)
+        
+        self.collisions = []
+        self.water_collisions = [] 
+
         for obj in self.tmx_data.objects:
             if obj.name == "collision":
                 self.collisions.append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
-        for obj in self.tmx_data.objects:
-            if obj.name == "collision1":
+            elif obj.name == "collision1": # Si tu as de l'eau dans la salle du boss
                 self.water_collisions.append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
+        
         self.player.add_collisions(self.collisions + self.water_collisions)
         self.group.add(self.player)
+        
         self.spawn_enemies()
+        self.group.center(self.player.rect.center)
