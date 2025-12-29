@@ -1,9 +1,9 @@
 import pygame
 import sys
 
-from game1 import Game
-from menu import Menu, GameOverMenu
-from music import Music
+from Game1 import Game
+from Menu import Menu, GameOverMenu
+from Music import Music
 
 pygame.init()
 
