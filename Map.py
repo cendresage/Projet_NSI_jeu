@@ -8,6 +8,7 @@ from Screen import Screen
 from Player import Player
 from Switch import Switch
 from Enemy import Enemy
+from Boss import Agis
 
 
 class Map:
@@ -95,6 +96,12 @@ class Map:
 
     def spawn_enemies(self):
         self.enemy_group.empty()
+
+        if self.current_map_name == "map_boss_1":
+            print("ATTENTION : Le Boss Agis apparaît !")
+            boss = Agis(self.screen, self.player, 240, 192)
+            self.group.add(boss)
+            self.enemy_group.add(boss)
 
         if self.current_map_name in self.spawn_data:
             enemies_list = self.spawn_data[self.current_map_name]
