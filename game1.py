@@ -106,6 +106,11 @@ class Game:
             all_bullets.add(self.enemy_bullets)
 
             self.map.update(all_bullets)
+
+            delayed_bullet = self.Player.check_pending_fire()
+            if delayed_bullet:
+                self.player_bullets.add(delayed_bullet)
+                self.map.group.add(delayed_bullet)
             
             self.draw_hud()
             
@@ -141,9 +146,9 @@ class Game:
                     world_mouse_y = (screen_mouse_y / zoom) + camera_y
 
                     new_bullet = self.Player.fire(world_mouse_x, world_mouse_y)
-                    self.player_bullets.add(new_bullet)
-                    self.map.group.add(new_bullet)
-                    
+                    if new_bullet: 
+                        self.player_bullets.add(new_bullet)
+                        self.map.group.add(new_bullet)
     def draw_hud(self):
         display = self.screen.get_display()
 

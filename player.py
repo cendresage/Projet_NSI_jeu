@@ -22,6 +22,7 @@ class Player(Entity):
         self.attacking = False            # Est-ce que le joueur est en train de tirer ?
         self.attack_time = 0              # Quand le joueur à tirer ?
         self.attack_stop_duration = 200   # Temps d'immobilisation en ms
+        self.pending_shot = None          # Stocke le tir en attente
 
     def update(self):
         self.check_input()
@@ -36,12 +37,19 @@ class Player(Entity):
             current_time = pygame.time.get_ticks()
             if current_time - self.attack_time > self.attack_stop_duration:
                 self.attacking = False
+                self.align_hitbox()
             
 
     def check_input(self):
-        if self.animation_walk is False and not self.attacking:
+        if self.attacking:
+            return
+
+        if self.pending_shot is not None:
+            return 
+
+        
+        if self.animation_walk is False:
             dx, dy = 0, 0
-            
             if self.keylistener.key_pressed(pygame.K_q) or self.keylistener.key_pressed(pygame.K_LEFT):
                 dx = -16
                 self.direction = "left"
@@ -53,22 +61,17 @@ class Player(Entity):
                 self.direction = "up"
             elif self.keylistener.key_pressed(pygame.K_s) or self.keylistener.key_pressed(pygame.K_DOWN):
                 dy = 16
-                self.direction = "down"
+                self.direction = "down"   
 
             if dx != 0 or dy != 0:
-                future_hitbox = self.hitbox.copy()
-                future_hitbox.x += dx
-                future_hitbox.y += dy
-
-                if future_hitbox.collidelist(self.collisions) == -1:
-                    if dx < 0:
-                        self.move_left()
-                    elif dx > 0:
-                        self.move_right()
-                    if dy < 0:
-                        self.move_up()
-                    elif dy > 0:
-                        self.move_down()
+                 future_hitbox = self.hitbox.copy()
+                 future_hitbox.x += dx
+                 future_hitbox.y += dy
+                 if future_hitbox.collidelist(self.collisions) == -1:
+                    if dx < 0: self.move_left()
+                    elif dx > 0: self.move_right()
+                    elif dy < 0: self.move_up()
+                    elif dy > 0: self.move_down()
 
     
     def check_collision_switchs(self):
@@ -77,6 +80,14 @@ class Player(Entity):
             for switch in self.switchs:
                 if self.hitbox.colliderect(switch.hitbox):
                     self.change_map = switch
+
+    def check_pending_fire(self):
+        """Appelé par le jeu pour vérifier si un tir doit partir maintenant"""
+        if not self.animation_walk and self.pending_shot:
+            target_x, target_y = self.pending_shot
+            self.pending_shot = None
+            return self._launch_bullet(target_x, target_y)
+        return None
             
             
 
@@ -96,31 +107,27 @@ class Player(Entity):
         return pygame.math.Vector2(0,0)  # pour éviter les erreurs de position
 
     def fire(self, mouse_x, mouse_y):
-        """Tire vers la souris, oriente le joueur et l'immobilise brièvement"""
+        """Gère le moment où la balle serra tirée"""
+
+        if self.animation_walk:
+            self.pending_shot = (mouse_x, mouse_y)
+            return None
+        return self._launch_bullet(mouse_x, mouse_y)
+    
+    def _launch_bullet(self, mouse_x, mouse_y):
+        """Fonction pour créer la balle et figer le joueur"""
         delta_x = mouse_x - self.rect.centerx
         delta_y = mouse_y - self.rect.centery
 
-
-        # Déterminer l'orientation (Haut, Bas, Gauche, Droite)
-
         if abs(delta_x) > abs(delta_y):
-            # Mouvement horizontal dominant
-            if delta_x > 0: self.direction = "right"
-            else: self.direction = "left"
+            self.direction = "right" if delta_x > 0 else "left"
         else:
-            # Mouvement vertical dominant
-            if delta_y > 0: self.direction = "down"
-            else: self.direction = "up"
-
-        # Mettre à jour l'image tout de suite pour faire face à la souris
+            self.direction = "down" if delta_y > 0 else "up"
 
         self.image = self.all_images[self.direction][self.index_image]
-
-        # Activer l'immobilisation
+        
         self.attacking = True
         self.attack_time = pygame.time.get_ticks()
-        self.animation_walk = False
-
 
         direction_vector = self.get_direction_vector()
         return Bullet(self.position.x, self.position.y, direction_vector, 5, pygame.image.load("Sprites/Bullet/Player_bullet.png"))
