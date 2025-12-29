@@ -29,13 +29,14 @@ if __name__ == "__main__":
             game = Game()
             result = game.run()
             if result == "game_over":
-                current_state = "game_over"     
+                final_score = game.Player.point
+                current_state = "game_over"
             else:
                 break
 
         elif current_state == "game_over":
             music_manager.play("game_over")
-            game_over_menu = GameOverMenu()
+            game_over_menu = GameOverMenu(final_score)
             action = game_over_menu.run()
             if action == "menu":
                 current_state = "menu"

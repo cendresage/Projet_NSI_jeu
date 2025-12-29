@@ -1,5 +1,9 @@
 import pygame
 import sys
+import json
+import os
+
+
 from screen import Screen
 
 ZOOM = 2
@@ -139,11 +143,23 @@ class Menu:
 
 
 class GameOverMenu:
-    def __init__(self):
+    def __init__(self, score):
         self.screen_obj = Screen()
         self.screen = self.screen_obj.get_display()
         self.running = True
         self.clock = pygame.time.Clock()
+
+        self.score = score
+        self.highscore = self.load_highscore()
+        self.new_record = False
+        
+        if self.score > self.highscore:
+            self.highscore = self.score
+            self.new_record = True
+            self.save_highscore()
+
+        self.font_score = pygame.font.SysFont(None, 40, bold=True)
+        self.font_title = pygame.font.SysFont(None, 60, bold=True)
 
         # Chargement des images
         self.image = [
@@ -165,12 +181,50 @@ class GameOverMenu:
         bottom_y = self.screen.get_height() - 100
         self.btn_menu = Button("Menu", center_x, bottom_y)
 
+
+
+    def load_highscore(self):
+        """Charge le meilleur score depuis le JSON"""
+        path = "assets/data/highscore.json"
+        if os.path.exists(path):
+            try:
+                with open(path, "r") as f:
+                    data = json.load(f)
+                    return data.get("highscore", 0)
+            except:
+                return 0
+        return 0
+    
+    def save_highscore(self):
+        """Sauvegarde le nouveau record"""
+        path = "assets/data/highscore.json"
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        with open(path, "w") as f:
+            json.dump({"highscore": self.highscore}, f)
+
+    
+
     def draw(self):
-        """ Méthode dédié au dessin pour être réutilisée dans le fondu"""
+        """ Affiche le fond, le bouton ET les scores """
 
         self.screen.blit(self.images[self.current_image_index], (0, 0))
-        self.btn_menu.draw(self.screen)
+        center_x = self.screen.get_width() // 2
 
+        txt_score = self.font_score.render(f"Score: {self.score}", True, (255, 255, 255))
+        rect_score = txt_score.get_rect(center=(center_x, 300))
+        self.screen.blit(txt_score, rect_score)
+
+        color = (255, 215, 0) if self.new_record else (200, 200, 200)
+        txt_best = self.font_score.render(f"Best: {self.highscore}", True, color)
+        rect_best = txt_best.get_rect(center=(center_x, 360))
+        self.screen.blit(txt_best, rect_best)
+
+        if self.new_record:
+            txt_record = self.font_title.render("NOUVEAU RECORD !", True, (255, 215, 0))
+            rect_record = txt_record.get_rect(center=(center_x, 200))
+            self.screen.blit(txt_record, rect_record)
+
+        self.btn_menu.draw(self.screen)
 
     def fade_in(self):
         fade_surface = pygame.Surface(self.screen.get_size())
