@@ -27,12 +27,31 @@ class Player(Entity):
 
         self.in_cutscene = False
 
+        try:
+            self.footstep_sound = pygame.mixer.Sound("musique/son_ingame/footstep.wav")
+            self.footstep_sound.set_volume(0.3)
+        except Exception as e:
+            print(f"Erreur son pas: {e}")
+            self.footstep_sound = None
+        self.step_timer = 0
+        self.step_interval = 350
+
     def update(self):
-        self.check_input()
         super().update()
+        if self.animation_walk:
+            current_time = pygame.time.get_ticks()
+            
+      
+            if current_time - self.step_timer > self.step_interval:
+                if self.footstep_sound:
+                    self.footstep_sound.play()
+                
+                
+                self.step_timer = current_time
+
+        self.check_input()
         self.check_collision_switchs()
         self.check_attack_state()
-
 
     def check_attack_state(self):
         """Vérifie si le temps d'arrêt après le tir est écoulé"""
