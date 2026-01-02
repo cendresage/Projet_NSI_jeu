@@ -32,11 +32,17 @@ class Player(Entity):
             self.footstep_sound.set_volume(0.3)
             self.shoot_song = pygame.mixer.Sound("musique/son_ingame/laser.wav")
             self.shoot_song.set_volume(0.3)
+            self.wallbump_sound = pygame.mixer.Sound("musique/son_ingame/wallbump.wav")
+            self.wallbump_sound.set_volume(0.4)
         except Exception as e:
             print(f"Erreur son pas: {e}")
             self.footstep_sound = None
+            self.shoot_song = None
+            self.wallbump_sound = None
+
         self.step_timer = 0
         self.step_interval = 350
+        self.bump_timer = 0
 
         
 
@@ -78,8 +84,12 @@ class Player(Entity):
             return 
 
         
+        if self.in_cutscene or self.attacking or self.pending_shot is not None:
+            return 
+
         if self.animation_walk is False:
             dx, dy = 0, 0
+            
             if self.keylistener.key_pressed(pygame.K_q) or self.keylistener.key_pressed(pygame.K_LEFT):
                 dx = -16
                 self.direction = "left"
@@ -97,11 +107,30 @@ class Player(Entity):
                  future_hitbox = self.hitbox.copy()
                  future_hitbox.x += dx
                  future_hitbox.y += dy
+                 
+                 # 1. CAS NORMAL : On peut avancer
                  if future_hitbox.collidelist(self.collisions) == -1:
                     if dx < 0: self.move_left()
                     elif dx > 0: self.move_right()
                     elif dy < 0: self.move_up()
                     elif dy > 0: self.move_down()
+                 
+                 # 2. CAS COLLISION : On tape un mur ou de l'eau
+                 else:
+                    # On change quand même la direction pour que le perso regarde le mur
+                    if dx < 0: self.direction = "left"
+                    elif dx > 0: self.direction = "right"
+                    elif dy < 0: self.direction = "up"
+                    elif dy > 0: self.direction = "down"
+                    self.image = self.all_images[self.direction][self.index_image]
+
+                    # --- GESTION DU SON BUMP ---
+                    current_time = pygame.time.get_ticks()
+                    # On joue le son seulement si 500ms se sont écoulées depuis le dernier
+                    if current_time - self.bump_timer > 500:
+                        if self.wallbump_sound:
+                            self.wallbump_sound.play()
+                        self.bump_timer = current_time
 
     
     def check_collision_switchs(self):
