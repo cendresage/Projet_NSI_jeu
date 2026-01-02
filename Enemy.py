@@ -57,6 +57,13 @@ class Enemy(Entity):
         self.move_cooldown = 200
         self.last_move_time = 0
 
+        try:
+            self.shoot_song = pygame.mixer.Sound("musique/son_ingame/laser.wav")
+            self.shoot_song.set_volume(0.3)
+        except Exception as e:
+            print(f"Erreur son pas: {e}")
+            self.shoot_song = None
+
 
     def add_walls(self, walls):
         self.walls = walls
@@ -274,6 +281,8 @@ class Enemy(Entity):
         else:
             direction_vector = pygame.math.Vector2(0, 1)
             
+        if self.shoot_song:
+            self.shoot_song.play()
         return Bullet(self.position.x, self.position.y, direction_vector, 3, pygame.image.load("Sprites/Bullet/Enemy_bullet.png"))
     
 
