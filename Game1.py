@@ -127,7 +127,7 @@ class Game:
         return sprite1.hitbox.colliderect(sprite2.hitbox)
 
     def handle_input(self):
-        for event in pygame.event.get():                # Gestion des évènements (récupère les touches pressées)
+        for event in pygame.event.get():                                            # Gestion des évènements (récupère les touches pressées)
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
@@ -136,7 +136,7 @@ class Game:
             elif event.type == pygame.KEYUP:
                 self.keylistener.remove_key(event.key)
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 1:                   # Bouton gauche de la souris
+                if event.button == 1:                                                # Bouton gauche de la souris
                     screen_mouse_x, screen_mouse_y = pygame.mouse.get_pos()
 
                     camera_x, camera_y = self.map.group.view.topleft

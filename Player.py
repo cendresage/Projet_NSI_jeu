@@ -30,11 +30,15 @@ class Player(Entity):
         try:
             self.footstep_sound = pygame.mixer.Sound("musique/son_ingame/footstep.wav")
             self.footstep_sound.set_volume(0.3)
+            self.shoot_song = pygame.mixer.Sound("musique/son_ingame/laser.wav")
+            self.shoot_song.set_volume(0.3)
         except Exception as e:
             print(f"Erreur son pas: {e}")
             self.footstep_sound = None
         self.step_timer = 0
         self.step_interval = 350
+
+        
 
     def update(self):
         super().update()
@@ -138,6 +142,7 @@ class Player(Entity):
         if self.animation_walk:
             self.pending_shot = (mouse_x, mouse_y)
             return None
+            
         return self._launch_bullet(mouse_x, mouse_y)
     
     def _launch_bullet(self, mouse_x, mouse_y):
@@ -156,6 +161,8 @@ class Player(Entity):
         self.attack_time = pygame.time.get_ticks()
 
         direction_vector = self.get_direction_vector()
+        if self.shoot_song:
+            self.shoot_song.play()
         return Bullet(self.position.x, self.position.y, direction_vector, 5, pygame.image.load("Sprites/Bullet/Player_bullet.png"))
     
 
