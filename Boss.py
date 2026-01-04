@@ -6,6 +6,7 @@ class Agis(Entity):
     def __init__(self, screen, player, x, y):
         super().__init__(None, screen, x, y)
         self.player = player
+        self._layer = 5
 
         # --- CONFIGURATION SPRITE ---
         # L'image fait 3360 de large pour 15 frames -> 3360 / 15 = 224 px par frame
