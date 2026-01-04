@@ -109,7 +109,7 @@ class BossBullet(pygame.sprite.Sprite):
             if self.homing_timer < self.homing_duration:
                 # Ajustement de la direction vers la cible
                 target_vector = pygame.math.Vector2(player.rect.centerx - self.position.x, player.rect.centery - self.position.y)
-                if target_vector.lenght() > 0:
+                if target_vector.length() > 0:
                     # On mélange l'ancienne vélocité avec la nouvelle
                     self.velocity = self.velocity.lerp(target_vector.normalize() * self.speed, 0.05)
                     self.velocity = self.velocity.normalize() * self.speed
