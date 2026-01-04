@@ -51,9 +51,10 @@ class Game:
 
         # --- SON HITMARKER ---
         try:
-            self.hit_sound = pygame.mixer.Sound("musique/son_ingame/hit.wav")
+            self.hit_sound = pygame.mixer.Sound("musique/son_ingame/hitmarker.wav")
             self.hit_sound.set_volume(0.5)
-        except:
+        except Exception as e:
+            print(f"Erreur son hit: {e}")
             self.hit_sound = None
 
 
@@ -92,10 +93,9 @@ class Game:
             )
             
             # Si le dictionnaire 'hits' n'est pas vide, c'est qu'on a touché quelqu'un !
-            if hits: 
-                if self.hit_sound:
+            if hits and self.hit_sound:
                     self.hit_sound.play()
-                    
+
             for enemy in hits:
                 enemy.damage(1)
                 if enemy.hp <= 0:

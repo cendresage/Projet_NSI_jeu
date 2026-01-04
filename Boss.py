@@ -1,5 +1,6 @@
 import pygame
 import random
+import os
 
 from Entity import Entity
 from BossBullet import BossBullet
@@ -15,15 +16,19 @@ class Agis(Entity):
         self.FRAME_WIDTH = 224
         self.FRAME_HEIGHT = 240
         
+        image_path = "Sprites/Personnages/Agis.png"
         try:
-            self.spritesheet = pygame.image.load("Sprites/Personnages/Agis.png").convert_alpha()
+            self.spritesheet = pygame.image.load(image_path).convert_alpha()
             self.all_images = self.get_images()
-            self.shoot_sound = pygame.mixer.Sound("musique/son_ingame/boss_shoot.wav")
-            self.shoot_sound.set_volume(0.4)
         except Exception as e:
-            print(f"Erreur chargement Agis: {e}")
-            self.all_images = [pygame.Surface((224,240))]
-            self.shoot_sound = None
+            print(f"\n[ERREUR BOSS] Impossible de charger l'image : {image_path}")
+            print(f"Erreur Python : {e}")
+            print(f"Dossier actuel de travail : {os.getcwd()}") # Affiche le dossier utilisé par le jeu
+            print("-> Le boss sera un carré noir pour éviter le crash.\n")
+            
+            # Carré noir de secours
+            self.all_images = [pygame.Surface((224, 240))]
+            self.all_images[0].fill((0, 0, 0))
 
         self.index_image = 0
         self.image = self.all_images[self.index_image]
@@ -55,6 +60,13 @@ class Agis(Entity):
             (40, 120),  # Main Bas Gauche
             (180, 120)  # Main Bas Droite
         ]
+
+        try:
+            self.shoot_sound = pygame.mixer.Sound("musique/son_ingame/boss_shot.wav") # Vérifie le nom du fichier !
+            self.shoot_sound.set_volume(0.4)
+        except Exception as e:
+            print(f"Erreur son boss shoot: {e}")
+            self.shoot_sound = None
 
     def get_images(self):
         """Découpe la grande image en 15 morceaux"""
@@ -125,7 +137,7 @@ class Agis(Entity):
         bullet = BossBullet(start_x, start_y, target_x, target_y, is_homing)
 
         bullet_group.add(bullet)
-        
+
         if self.shoot_sound:
             self.shoot_sound.play()
 
