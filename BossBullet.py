@@ -30,6 +30,12 @@ class BossBullet(pygame.sprite.Sprite):
             self.frames_explode = [pygame.Surface((32,32))] 
             self.frames_explode[0].fill((100, 100, 100))
 
+        try:
+            self.explode_sound = pygame.mixer.Sound("musique/son_ingame/boss_impact.wav")
+            self.explode_sound.set_volume(0.2) # Volume bas comme demandé (0.2)
+        except:
+            self.explode_sound = None
+
         # --- INITIALISATION ---
         self.image_index = 0
         self.image = self.frames_fly[self.image_index]
@@ -128,6 +134,9 @@ class BossBullet(pygame.sprite.Sprite):
     def explode(self):
         if self.state == self.STATE_EXPLODING:
             return
+        
+        if self.explode_sound:
+            self.explode_sound.play()
 
         self.state = self.STATE_EXPLODING
         self.image_index = 0

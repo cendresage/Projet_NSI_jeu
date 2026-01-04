@@ -18,9 +18,12 @@ class Agis(Entity):
         try:
             self.spritesheet = pygame.image.load("Sprites/Personnages/Agis.png").convert_alpha()
             self.all_images = self.get_images()
+            self.shoot_sound = pygame.mixer.Sound("musique/son_ingame/boss_shoot.wav")
+            self.shoot_sound.set_volume(0.4)
         except Exception as e:
             print(f"Erreur chargement Agis: {e}")
             self.all_images = [pygame.Surface((224,240))]
+            self.shoot_sound = None
 
         self.index_image = 0
         self.image = self.all_images[self.index_image]
@@ -122,6 +125,9 @@ class Agis(Entity):
         bullet = BossBullet(start_x, start_y, target_x, target_y, is_homing)
 
         bullet_group.add(bullet)
+        
+        if self.shoot_sound:
+            self.shoot_sound.play()
 
     def roar(self):
         try:
