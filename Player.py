@@ -74,32 +74,27 @@ class Player(Entity):
 
     def check_input(self):
 
-        if self.in_cutscene:
-            return
-
-        if self.attacking:
-            return
-
-        if self.pending_shot is not None:
-            return 
-
-        
         if self.in_cutscene or self.attacking or self.pending_shot is not None:
             return 
 
         if self.animation_walk is False:
             dx, dy = 0, 0
             
-            if self.keylistener.key_pressed(pygame.K_q) or self.keylistener.key_pressed(pygame.K_LEFT):
+            # --- MODIFICATION ICI : On utilise les controles configurables ---
+            keys = self.keylistener
+            ctrl = self.keylistener.controls
+
+            # Déplacement
+            if keys.key_pressed(ctrl["left"]):
                 dx = -16
                 self.direction = "left"
-            elif self.keylistener.key_pressed(pygame.K_d) or self.keylistener.key_pressed(pygame.K_RIGHT):
+            elif keys.key_pressed(ctrl["right"]):
                 dx = 16
                 self.direction = "right"
-            elif self.keylistener.key_pressed(pygame.K_z) or self.keylistener.key_pressed(pygame.K_UP):
+            elif keys.key_pressed(ctrl["up"]):
                 dy = -16
                 self.direction = "up"
-            elif self.keylistener.key_pressed(pygame.K_s) or self.keylistener.key_pressed(pygame.K_DOWN):
+            elif keys.key_pressed(ctrl["down"]):
                 dy = 16
                 self.direction = "down"   
 
@@ -108,26 +103,21 @@ class Player(Entity):
                  future_hitbox.x += dx
                  future_hitbox.y += dy
                  
-                 # 1. CAS NORMAL : On peut avancer
                  if future_hitbox.collidelist(self.collisions) == -1:
                     if dx < 0: self.move_left()
                     elif dx > 0: self.move_right()
                     elif dy < 0: self.move_up()
                     elif dy > 0: self.move_down()
-                 
-                 # 2. CAS COLLISION : On tape un mur ou de l'eau
                  else:
-                    # On change quand même la direction pour que le perso regarde le mur
+                    # Cas collision (mur)
                     if dx < 0: self.direction = "left"
                     elif dx > 0: self.direction = "right"
                     elif dy < 0: self.direction = "up"
                     elif dy > 0: self.direction = "down"
                     self.image = self.all_images[self.direction][self.index_image]
 
-                    # --- GESTION DU SON BUMP ---
                     current_time = pygame.time.get_ticks()
-                    # On joue le son seulement si 500ms se sont écoulées depuis le dernier
-                    if current_time - self.bump_timer > 500:
+                    if current_time - self.bump_timer > 300:
                         if self.wallbump_sound:
                             self.wallbump_sound.play()
                         self.bump_timer = current_time
