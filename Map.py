@@ -30,7 +30,7 @@ class Map:
 
         self.spawn_data = self.load_spawn_data()
 
-        self.current_map = Switch("switch", "map0", pygame.Rect(0, 0, 0, 0), 0)
+        self.current_map = Switch("switch", "map2", pygame.Rect(0, 0, 0, 0), 0)
 
         self.switch_map(self.current_map)
 
@@ -173,7 +173,7 @@ class Map:
             # On charge la nouvelle map
             self.load_boss_arena()
             try:
-                slam_sound = pygame.mixer.Sound("musique/son_ingame/slam_door")
+                slam_sound = pygame.mixer.Sound("musique/son_ingame/slam_door.wav")
                 slam_sound.play()
 
             except:

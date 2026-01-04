@@ -6,6 +6,7 @@ from Entity import Entity
 from Keylistener import Keylistener
 from Player import Player
 from Enemy import Enemy
+from Boss import Agis
 
 HUD_SCALE = 2
 
@@ -23,6 +24,7 @@ class Game:
         self.player_bullets = pygame.sprite.Group()
         self.enemy_group = pygame.sprite.Group()
         self.enemy_bullets = pygame.sprite.Group()
+        self.boss_bullets = pygame.sprite.Group()
 
         # 2. Création de la map en lui passant le groupe d'ennemis
         self.map = Map(self.screen, self.enemy_group)
@@ -64,12 +66,16 @@ class Game:
                 
             self.handle_input()
 
+            # --- MISE A JOUR DES ENNEMIS CLASSIQUES ---
             for enemy in self.enemy_group:
+                if isinstance(enemy, Agis):
+                    continue
                 new_bullet = enemy.update()
                 if new_bullet:
                     self.map.group.add(new_bullet)
                     self.enemy_bullets.add(new_bullet)
 
+            # --- COLLISIONS JOUEUR vs ENNEMIS ---
             hits = pygame.sprite.groupcollide(
                 self.enemy_group, 
                 self.player_bullets, 
@@ -79,8 +85,7 @@ class Game:
             )
             for enemy in hits:
                 enemy.damage(1)
-
-                if enemy.hp <=0:
+                if enemy.hp <= 0:
                     self.map.remove_dead_enemy(enemy)
                     
             hits = pygame.sprite.groupcollide(
@@ -101,6 +106,22 @@ class Game:
             )
             for bullet in hits_player:
                 self.Player.damage(1)
+            
+            # --- LOGIQUE DU BOSS (AGIS) ---
+            current_time = pygame.time.get_ticks()
+            
+            # Mise à jour du Boss
+            for entity in self.map.enemy_group:
+                if isinstance(entity, Agis):
+                    entity.update(current_time, self.boss_bullets, self.map.collisions)
+
+            # Mise à jour des balles du boss (Déplacement + Collision Joueur interne à la classe BossBullet)
+            self.boss_bullets.update(self.Player, self.map.collisions)
+
+            # Ajout des balles du boss au groupe d'affichage pour qu'on les voie
+            self.map.group.add(self.boss_bullets)
+            
+            # --- FIN LOGIQUE BOSS ---
 
             all_bullets = self.player_bullets.copy()
             all_bullets.add(self.enemy_bullets)
@@ -117,7 +138,9 @@ class Game:
             camera_pos = self.map.group.view.topleft
             map_zoom = self.map.map_layer.zoom
             for enemy in self.enemy_group:
-                enemy.draw_health_bar(self.screen.get_display(), camera_pos, map_zoom)
+                # Petite sécurité pour ne pas crash
+                if hasattr(enemy, 'draw_health_bar'):
+                    enemy.draw_health_bar(self.screen.get_display(), camera_pos, map_zoom)
             
             self.screen.update()
         

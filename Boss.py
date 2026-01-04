@@ -1,6 +1,8 @@
 import pygame
+import random
 
 from Entity import Entity
+from BossBullet import BossBullet
 
 class Agis(Entity):
     def __init__(self, screen, player, x, y):
@@ -12,10 +14,14 @@ class Agis(Entity):
         # L'image fait 3360 de large pour 15 frames -> 3360 / 15 = 224 px par frame
         self.FRAME_WIDTH = 224
         self.FRAME_HEIGHT = 240
-        self.spritesheet = pygame.image.load("Sprites/Personnages/Agis.png").convert_alpha()
+        
+        try:
+            self.spritesheet = pygame.image.load("Sprites/Personnages/Agis.png").convert_alpha()
+            self.all_images = self.get_images()
+        except Exception as e:
+            print(f"Erreur chargement Agis: {e}")
+            self.all_images = [pygame.Surface((224,240))]
 
-        # Découpage des images
-        self.all_images = self.get_images()
         self.index_image = 0
         self.image = self.all_images[self.index_image]
 
@@ -24,12 +30,8 @@ class Agis(Entity):
         self.position = pygame.math.Vector2(x, y)
         self.rect.topleft = (x, y)
 
-        # --- HITBOX SPÉCIALE (Colonne) ---
-        hitbox_width = 80 
-        hitbox_height = 190
-
-        # Centre la hitbox par rapport à l'image
-        self.hitbox = pygame.Rect(0, 0, hitbox_width, hitbox_height)
+        # --- HITBOX ---
+        self.hitbox = pygame.Rect(0, 0, 80, 190)
         self.align_hitbox_custom()
 
         # --- ANIMATION ---
@@ -37,9 +39,19 @@ class Agis(Entity):
         self.animation_delay = 100
 
         # --- STATS ---
-        self.hp = 50 # Un boss a plus de vie !
+        self.hp = 50
         self.max_hp = 50
         self.points = 500
+
+        # --- Attaque ---
+        self.attack_timer = pygame.time.get_ticks()
+        self.last_phase = 1 # détection de changement de phase
+        self.hands_offsets = [
+            (20, 60),   # Main Haut Gauche
+            (200, 60),  # Main Haut Droite
+            (40, 120),  # Main Bas Gauche
+            (180, 120)  # Main Bas Droite
+        ]
 
     def get_images(self):
         """Découpe la grande image en 15 morceaux"""
@@ -51,21 +63,74 @@ class Agis(Entity):
             images.append(surface)
         return images
 
-    def update(self):
+    def update(self, current_time=None, bullet_group=None, walls=None):
         """Logique propre au Boss"""
-        self.animate()
+        
+        # Cas 1 : Appelé par Map.py (automatique, sans arguments)
+        # On ne fait rien pour ne pas planter, ou juste l'animation simple.
+        if current_time is None or bullet_group is None or walls is None:
+            return
 
-        self.align_hitbox_custom()
-
-        # (Logique d'attaque à ajouter plus tard)
-
-    def animate(self):
-        """Change d'image toutes les 0.1 secondes"""
-        now = pygame.time.get_ticks()
-        if now - self.animation_timer > self.animation_delay:
-            self.animation_timer = now
+        # Cas 2 : Appelé par Game1.py (manuel, avec arguments)
+        # Là on lance toute la logique de combat
+        
+        # Animation
+        if current_time - self.animation_timer > self.animation_delay:
+            self.animation_timer = current_time
             self.index_image = (self.index_image + 1) % len(self.all_images)
             self.image = self.all_images[self.index_image]
+
+        # Combat
+        self.manage_combat(current_time, bullet_group)
+        self.align_hitbox_custom()
+
+    def manage_combat(self, current_time, bullet_group):
+        # Détermination de la phase
+        phase = 1
+        attack_cooldown = 2000
+        is_homing = False
+
+        if 10 < self.hp <= 25:
+            phase = 2 
+            attack_cooldown = 1000
+        elif self.hp <= 10:
+            phase = 3
+            attack_cooldown = 1200
+            is_homing = True
+
+        # Détection changement de phase
+        if phase != self.last_phase:
+            self.roar()
+            self.last_phase = phase
+
+        # Tirer si le timer est bon
+        if current_time - self.attack_timer > attack_cooldown:
+            self.attack_timer = current_time
+            self.shoot(bullet_group, is_homing)
+
+    def shoot(self, bullet_group, is_homing):
+        # Choisir une main au hasard
+        offset_x, offset_y = random.choice(self.hands_offsets)
+
+        start_x = self.rect.x + offset_x
+        start_y = self.rect.y + offset_y
+
+        # Viser le joueur
+        target_x = self.player.rect.centerx
+        target_y = self.player.rect.centery
+
+        bullet = BossBullet(start_x, start_y, target_x, target_y, is_homing)
+
+        bullet_group.add(bullet)
+
+    def roar(self):
+        try:
+            sound = pygame.mixer.Sound("musique/son_ingame/roar.wav")
+            sound.set_volume(0.8)
+            sound.play()
+        except:
+            pass
+
 
     
     def align_hitbox_custom(self):
