@@ -63,7 +63,7 @@ class Agis(Entity):
 
         try:
             self.shoot_sound = pygame.mixer.Sound("musique/son_ingame/boss_shot.wav") # Vérifie le nom du fichier !
-            self.shoot_sound.set_volume(0.4)
+            self.shoot_sound.set_volume(0.6)
         except Exception as e:
             print(f"Erreur son boss shoot: {e}")
             self.shoot_sound = None
@@ -102,12 +102,12 @@ class Agis(Entity):
     def manage_combat(self, current_time, bullet_group):
         # Détermination de la phase
         phase = 1
-        attack_cooldown = 2000
+        attack_cooldown = 2200
         is_homing = False
 
         if 10 < self.hp <= 25:
             phase = 2 
-            attack_cooldown = 1000
+            attack_cooldown = 1500
         elif self.hp <= 10:
             phase = 3
             attack_cooldown = 1200
