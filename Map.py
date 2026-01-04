@@ -199,11 +199,12 @@ class Map:
                     print(f"Erreur chargement cri du boss : {e}")
                 
                 try:
-                    pygame.mixer.music.load("...")
+                    pygame.mixer.music.load("musique/bossbattle.mp3")
+                    pygame.mixer.music.set_volume(0.5)
                     pygame.mixer.music.play(-1)
 
-                except:
-                    print("Musique de boss introuvable")
+                except Exception as e:
+                    print(f"Musique de boss introuvable : {e}")
 
 
         screen_width, screen_height = self.screen.get_size()

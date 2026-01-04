@@ -6,7 +6,8 @@ class Music:
         self.tracks = {
             "menu": "musique/menu.mp3",
             "game": "musique/game.mp3",
-            "game_over": "musique/game_over.mp3"
+            "game_over": "musique/game_over.mp3",
+            "boss": "musique/bossbattle.mp3"
         }
 
         self.global_volume = 0.5  # Volume par défaut (50%) -> Ce sera modifiable par la barre de son
