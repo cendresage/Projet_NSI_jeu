@@ -49,6 +49,13 @@ class Game:
         
         self.player_head_img = self._get_player_head_image()
 
+        # --- SON HITMARKER ---
+        try:
+            self.hit_sound = pygame.mixer.Sound("musique/son_ingame/hit.wav")
+            self.hit_sound.set_volume(0.5)
+        except:
+            self.hit_sound = None
+
 
     def _get_player_head_image(self):
         player_spritesheet = pygame.image.load("Sprites/Personnages/Player.png")
@@ -83,6 +90,12 @@ class Game:
                 True,  
                 collided=self.check_collision_hitbox 
             )
+            
+            # Si le dictionnaire 'hits' n'est pas vide, c'est qu'on a touché quelqu'un !
+            if hits: 
+                if self.hit_sound:
+                    self.hit_sound.play()
+                    
             for enemy in hits:
                 enemy.damage(1)
                 if enemy.hp <= 0:
