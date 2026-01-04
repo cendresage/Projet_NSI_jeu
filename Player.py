@@ -12,8 +12,8 @@ class Player(Entity):
         super().__init__(keylistener, screen, x, y)
 
         self.point = 0
-        self.hp = 3
-        self.max_hp = 3
+        self.hp = 5
+        self.max_hp = 5
 
         self.switchs: list[Switch] | None = None
         self.collisions: list[pygame.Rect] | None = None
