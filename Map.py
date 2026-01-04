@@ -173,7 +173,7 @@ class Map:
             # On charge la nouvelle map
             self.load_boss_arena()
             try:
-                slam_sound = pygame.mixer.Sound("...")
+                slam_sound = pygame.mixer.Sound("musique/son_ingame/slam_door")
                 slam_sound.play()
 
             except:
@@ -191,8 +191,17 @@ class Map:
                 self.boss_cutscene_state = 0
 
                 try:
+                    roar_sound = pygame.mixer.Sound("musique/son_ingame/roar.wav")
+                    roar_sound.set_volume(0.8)
+                    roar_sound.play()
+
+                except Exception as e:
+                    print(f"Erreur chargement cri du boss : {e}")
+                
+                try:
                     pygame.mixer.music.load("...")
                     pygame.mixer.music.play(-1)
+
                 except:
                     print("Musique de boss introuvable")
 
