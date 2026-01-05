@@ -32,6 +32,7 @@ class Agis(Entity):
 
         try:
             self.sheet_smoke = pygame.image.load("Sprites/Bullet/Smoke.png").convert_alpha()
+            self.sheet_smoke = pygame.transform.scale_by(self.sheet_smoke, 2)
             self.death_frames = self.get_frames_row(self.sheet_smoke, 6, 17, 64)
         except Exception as e:
             print(f"Erreur chargement smoke boss: {e}")
@@ -80,6 +81,15 @@ class Agis(Entity):
         except Exception as e:
             print(f"Erreur son boss shoot: {e}")
             self.shoot_sound = None
+
+        try:
+            self.bar_img = pygame.image.load("Sprites/ATH/boss_bar.png").convert_alpha()
+        except:
+            print("Erreur : Image barre boss non trouvée")
+            self.bar_img = None
+
+        self.font_boss = pygame.font.SysFont("Arial", 24, bold=True)
+            
 
     def get_images(self):
         """Découpe la grande image en 15 morceaux"""
@@ -221,7 +231,65 @@ class Agis(Entity):
                 self.kill()
             
 
-    # Pour ne pas faire planter le jeu si on essaie d'afficher sa barre de vie classique
     def draw_health_bar(self, display, camera_pos, map_zoom):
-        # On pourra faire une belle barre de boss en haut de l'écran plus tard
-        pass
+        if self.is_dying: 
+            return
+
+        screen_w, screen_h = display.get_size()
+
+        if self.bar_img:
+            bar_rect = self.bar_img.get_rect(midbottom=(screen_w // 2, screen_h - 10))
+
+            # --- REGLAGES DE LA ZONE ROUGE ---
+            padding_left = 45   # Marge à gauche
+            padding_right = 45  # Marge à droite
+            padding_top = 13    # Marge en haut (dans le cadre)
+            padding_bottom = 13 # Marge en bas
+
+            inner_width = bar_rect.width - (padding_left + padding_right)
+            inner_height = self.bar_img.get_height() - (padding_top + padding_bottom)
+
+            ratio = self.hp / self.max_hp
+            if ratio < 0:
+                ratio = 0
+            current_bar_width = int(inner_width * ratio)
+
+            health_rect = pygame.Rect(
+                bar_rect.x + padding_left,
+                bar_rect.y + padding_top,
+                current_bar_width,
+                inner_height
+            )
+            
+            #  Dessiner la vie (Rouge sombre derrière)
+            # On dessine un fond noir d'abord pour "boucher" le trou transparent si la vie baisse
+            bg_rect = pygame.Rect(bar_rect.x + padding_left, bar_rect.y + padding_top, inner_width, inner_height)
+            pygame.draw.rect(display, (20, 0, 0), bg_rect)
+
+            # On dessine ensuite la barre de vie
+            if current_bar_width > 0:
+                pygame.draw.rect(display, (180, 0, 0), health_rect)
+
+            # Dessiner le cadre
+            display.blit(self.bar_img, bar_rect)
+
+            # Position du texte
+            text_y_pos = bar_rect.top - 25
+        else:
+            # Fallback (Si l'image ne charge pas)
+            bar_width = 600
+            x = (screen_w - bar_width) // 2
+            y = screen_h - 60
+            pygame.draw.rect(display, (50, 50, 50), (x, y, bar_width, 20))
+            ratio = self.hp / self.max_hp
+            pygame.draw.rect(display, (180, 0, 0), (x, y, bar_width * ratio, 20))
+            text_y_pos = y - 35
+        
+        name = "AGIS - LE GARDIEN D'AME"
+        shadow_surf = self.font_boss.render(name, True, (0, 0, 0))
+        shadow_rect = shadow_surf.get_rect(center=(screen_w // 2 + 2, text_y_pos + 2))
+        display.blit(shadow_surf, shadow_rect)
+
+        text_surf = self.font_boss.render(name, True, (255, 215, 0))
+        text_rect = text_surf.get_rect(center=(screen_w // 2, text_y_pos))
+        display.blit(text_surf, text_rect)
