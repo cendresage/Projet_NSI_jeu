@@ -108,7 +108,7 @@ class Map:
 
         if self.current_map_name == "map_boss_1":
             print("ATTENTION : Le Boss Agis apparaît !")
-            boss = Agis(self.screen, self.player, 192, 144)
+            boss = Agis(self.screen, self.player, 208, 144)
             self.group.add(boss)
             self.enemy_group.add(boss)
 
@@ -248,7 +248,7 @@ class Map:
         self.tmx_data = pytmx.load_pygame(f"assets/map/map_boss_1.tmx")
         map_data = pyscroll.data.TiledMapData(self.tmx_data)
         self.map_layer = pyscroll.BufferedRenderer(map_data, self.screen.get_size())
-        self.map_layer.zoom = 3 
+        self.map_layer.zoom = 2.75 
         
         self.group = pyscroll.PyscrollGroup(map_layer=self.map_layer, default_layer=6)
         
