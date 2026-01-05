@@ -30,6 +30,13 @@ class Agis(Entity):
             self.all_images = [pygame.Surface((224, 240))]
             self.all_images[0].fill((0, 0, 0))
 
+        try:
+            self.sheet_smoke = pygame.image.load("Sprites/Bullet/Smoke.png").convert_alpha()
+            self.death_frames = self.get_frames_row(self.sheet_smoke, 6, 17, 64)
+        except Exception as e:
+            print(f"Erreur chargement smoke boss: {e}")
+            self.death_frames = []
+
         self.index_image = 0
         self.image = self.all_images[self.index_image]
 
@@ -50,6 +57,12 @@ class Agis(Entity):
         self.hp = 50
         self.max_hp = 50
         self.points = 500
+
+        # --- ETAT MORT ---
+        self.is_dying = False
+        self.death_timer = 0
+        self.death_index = 0
+        self.death_delay = 60 # Vitesse de l'animation de mort
 
         # --- Attaque ---
         self.attack_timer = pygame.time.get_ticks()
@@ -77,6 +90,16 @@ class Agis(Entity):
             )
             images.append(surface)
         return images
+    
+    def get_frames_row(self, sheet, row_index, count, size):
+        frames = []
+        y = (row_index - 1) * size 
+        for i in range(count):
+            try:
+                frame = sheet.subsurface(pygame.Rect(i*size, y, size, size))
+                frames.append(frame)
+            except ValueError: pass
+        return frames
 
     def update(self, current_time=None, bullet_group=None, walls=None):
         """Logique propre au Boss"""
@@ -84,6 +107,15 @@ class Agis(Entity):
         # Cas 1 : Appelé par Map.py (automatique, sans arguments)
         # On ne fait rien pour ne pas planter, ou juste l'animation simple.
         if current_time is None or bullet_group is None or walls is None:
+            return
+        
+        # Si le boss est en train de mourir, on joue SEULEMENT l'animation de mort
+        if self.is_dying:
+            self.animate_death(current_time)
+            return
+
+        # Comportement normal
+        if bullet_group is None or walls is None:
             return
 
         # Cas 2 : Appelé par Game1.py (manuel, avec arguments)
@@ -144,7 +176,7 @@ class Agis(Entity):
     def roar(self):
         try:
             sound = pygame.mixer.Sound("musique/son_ingame/roar.wav")
-            sound.set_volume(0.8)
+            sound.set_volume(1.2)
             sound.play()
         except:
             pass
@@ -160,9 +192,34 @@ class Agis(Entity):
     def damage(self, amount):
         self.hp -= amount
         if self.hp <= 0:
-            self.kill()
+            self.is_dying = True
             self.player.point += self.points
-            print("Boss vaincu !!!!")
+            # On fait un fondu de 2 secondes pour un rendu fluide
+            pygame.mixer.music.fadeout(2000)
+            self.roar()
+            
+            # On annule la hitbox pours que les balles passent à travers
+            self.hitbox = pygame.Rect(0, 0, 0, 0)
+            print("Boss vaincu - Animation de mort lancée")
+
+    def animate_death(self, current_time):
+        if current_time - self.death_timer > self.death_delay:
+            self.death_timer = current_time
+
+            # SI c'est la première frame de mort, on passe sur l'image de fumée
+            if self.death_index == 0 and self.death_frames:
+                self.image = self.death_frames[0]
+                # On recentre l'image car la fumée est plus petite que le boss
+                old_center = self.rect.center
+                self.rect = self.image.get_rect(center=old_center)
+
+            # On avance dans l'animation
+            self.death_index += 1
+            if self.death_index < len(self.death_frames):
+                self.image = self.death_frames[self.death_index]
+            else:
+                self.kill()
+            
 
     # Pour ne pas faire planter le jeu si on essaie d'afficher sa barre de vie classique
     def draw_health_bar(self, display, camera_pos, map_zoom):
