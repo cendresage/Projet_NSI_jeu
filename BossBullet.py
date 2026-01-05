@@ -24,7 +24,7 @@ class BossBullet(pygame.sprite.Sprite):
 
         try:
             self.sheet_smoke = pygame.image.load("Sprites/Bullet/Smoke.png").convert_alpha()
-            self.frames_explode = self.get_frames_row(self.sheet_smoke, 2, 17, 64)
+            self.frames_explode = self.get_frames_row(self.sheet_smoke, 4, 17, 64)
         except Exception as e:
             print(f"Erreur image smoke: {e}")
             self.frames_explode = [pygame.Surface((32,32))] 
