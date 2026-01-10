@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="40" height="40" tilewidth="16" tileheight="16" infinite="0" nextlayerid="7" nextobjectid="210">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="40" height="40" tilewidth="16" tileheight="16" infinite="0" nextlayerid="7" nextobjectid="211">
  <tileset firstgid="1" source="../tileset/garden.tsx"/>
  <tileset firstgid="474" source="jsp.tsx"/>
  <tileset firstgid="1242" source="Death animation.tsx"/>
  <tileset firstgid="1258" source="2Crate.tsx"/>
  <tileset firstgid="1330" source="Tilemap Dungeon original size.tsx"/>
+ <tileset firstgid="1930" source="garden.tsx"/>
  <group id="5" name="collisions">
   <objectgroup id="6" name="collisions">
    <object id="163" name="collision" x="17" y="16" width="346" height="31.3333"/>
@@ -25,6 +26,7 @@
    <object id="178" name="collision1" x="465" y="528" width="64" height="64"/>
    <object id="179" name="collision1" x="529" y="544" width="64" height="48"/>
    <object id="180" name="collision1" x="561" y="528" width="32" height="64"/>
+   <object id="210" name="collision2" x="448" y="528" width="16" height="16"/>
   </objectgroup>
  </group>
  <group id="4" name="tiled">
@@ -107,7 +109,7 @@
 1429,1550,1551,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1597,1598,0,
 1459,1520,1521,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1675,1676,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1537,1538,0,
 1489,1550,1551,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1567,1568,0,
-1519,1520,1521,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1597,1598,0,
+1519,1520,1521,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2071,0,0,0,0,0,0,0,0,1597,1598,0,
 1549,1550,1551,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1507,1508,0,
 1579,1520,1521,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1675,1676,0,0,0,0,0,0,0,0,0,0,0,1537,1538,0,
 1609,1550,1551,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1567,1568,0,
