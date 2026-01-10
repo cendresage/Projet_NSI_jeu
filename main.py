@@ -1,6 +1,7 @@
 import pygame
 
-from Menu import Menu, EndMenu
+from Menu import Menu
+from EndMenu import EndMenu
 from Game1 import Game
 
 def main():
@@ -11,6 +12,9 @@ def main():
         # 1. On lance le Menu Principal
         menu = Menu()
         action = menu.run()
+        
+        if action == "exit":
+            break
         
         if action == "play":
             # 2. On lance le Jeu

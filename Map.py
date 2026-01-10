@@ -48,52 +48,67 @@ class Map:
         else:
             print(f"Erreur: Fichier {path} introuvable.")
             return {}
-
-
-    def switch_map(self, switch: Switch):
-        self.current_map_name = switch.name
-        print(f"Chargement de la carte : {self.current_map_name}")
-        self.tmx_data = pytmx.load_pygame(f"assets/map/{switch.name}.tmx")
-        map_data = pyscroll.data.TiledMapData(self.tmx_data)
-        self.map_layer = pyscroll.BufferedRenderer(map_data, self.screen.get_size())
-        self.map_layer.zoom = 3                                                                      # Zoom
         
-        layer_index = self.map_layer_config.get(self.current_map_name, 6)
-        print(f" Calque par défaut défini sur : {layer_index}")
-
-        self.group = pyscroll.PyscrollGroup(map_layer=self.map_layer, default_layer=layer_index)
-
-        self.switchs = []
+    def parse_map_data(self):
+        """Réinitialise et remplit les listes de collisions et switchs depuis les données Tiled."""
         self.collisions = []
         self.water_collisions = []
         self.chests = []
+        self.switchs = []
 
         for obj in self.tmx_data.objects:
             if obj.name == "collision":
                 self.collisions.append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
-
+            
             elif obj.name == "collision1":
                 self.water_collisions.append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
             
             elif obj.name == "collision2":
                 self.chests.append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
-
-            # Petite sécurité si un objet n'a pas de nom dans Tiled
+            
             if obj.name is None: continue 
             
-            type = obj.name.split(" ")[0]
-            if type == "switch":
+            type_obj = obj.name.split(" ")[0]
+            if type_obj == "switch":
                 self.switchs.append(Switch(
-                    type, obj.name.split(" ")[1], pygame.Rect(obj.x, obj.y, obj.width, obj.height), int(obj.name.split(" ")[-1])
+                    type_obj, obj.name.split(" ")[1], pygame.Rect(obj.x, obj.y, obj.width, obj.height), int(obj.name.split(" ")[-1])
                 ))
 
+    def update_player_collisions(self):
+        """Donne au joueur la liste complète des obstacles."""
+        if self.player:
+            # C'est ici qu'on additionne tout.
+            all_obstacles = self.collisions + self.water_collisions + self.chests
+            self.player.add_collisions(all_obstacles)
+
+
+    def switch_map(self, switch: Switch):
+        self.current_map_name = switch.name
+        print(f"Chargement de la carte : {self.current_map_name}")
+        
+        # Chargement graphique
+        self.tmx_data = pytmx.load_pygame(f"assets/map/{switch.name}.tmx")
+        map_data = pyscroll.data.TiledMapData(self.tmx_data)
+        self.map_layer = pyscroll.BufferedRenderer(map_data, self.screen.get_size())
+        self.map_layer.zoom = 3
+        
+        layer_index = self.map_layer_config.get(self.current_map_name, 6)
+        self.group = pyscroll.PyscrollGroup(map_layer=self.map_layer, default_layer=layer_index)
+
+        # 1. On parse les données (remplace la grosse boucle for)
+        self.parse_map_data()
+
+        # 2. On fait spawn les ennemis
         self.spawn_enemies()
 
+        # 3. On place le joueur
         if self.player:
             self.pose_player(switch)
             self.player.align_hitbox()
             self.player.add_switchs(self.switchs)
-            self.player.add_collisions(self.collisions + self.water_collisions + self.chests)
+            
+            # Utilisation de la méthode centralisée
+            self.update_player_collisions()
 
             if hasattr(self.player, "_layer"):
                 del self.player._layer
@@ -102,7 +117,6 @@ class Map:
         
         self.current_map = switch
 
-        # Détection de l'entrée dans la map du boss
         if self.current_map_name == "map_boss_0":
             print("Début de la cinématique du Boss")
             self.start_boss_cutscene()
@@ -131,7 +145,8 @@ class Map:
 
                     new_enemy = Enemy(self.screen, self.player, x, y, max_hp=hp, points=points)
                     new_enemy.spawn_info = enemy_info
-                    new_enemy.add_walls(self.collisions + self.water_collisions)
+                    # Ici aussi on peut utiliser les listes déjà chargées
+                    new_enemy.add_walls(self.collisions + self.water_collisions + self.chests)
                     self.group.add(new_enemy)
                     self.enemy_group.add(new_enemy)
 
@@ -155,7 +170,8 @@ class Map:
         self.player = player
         self.player.align_hitbox()
         self.player.add_switchs(self.switchs)
-        self.player.add_collisions(self.collisions + self.water_collisions + self.chests)
+        # Utilisation de la méthode centralisée
+        self.update_player_collisions()
         self.spawn_enemies()
 
     def update(self, bullet_group: pygame.sprite.Group):
@@ -183,7 +199,6 @@ class Map:
 
             except:
                 print("Son de porte introuvable")
-            
             self.boss_cutscene_state = 3 # On passe au Dezoom
         
         elif self.boss_cutscene_state == 3: 
@@ -211,11 +226,10 @@ class Map:
                 except Exception as e:
                     print(f"Musique de boss introuvable : {e}")
 
-
+        # --- GESTION BALLES HORS MAP ---
         screen_width, screen_height = self.screen.get_size()
         visible_rect = pygame.Rect(0,0, screen_width, screen_height)
         visible_rect.center = self.player.rect.center
-
         out_of_bounds_rect = visible_rect.inflate(100,100)
 
         for bullet in bullet_group.copy():
@@ -257,21 +271,12 @@ class Map:
         
         self.group = pyscroll.PyscrollGroup(map_layer=self.map_layer, default_layer=6)
         
-        self.collisions = []
-        self.water_collisions = [] 
-
-        for obj in self.tmx_data.objects:
-            if obj.name == "collision":
-                self.collisions.append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
-
-            elif obj.name == "collision1":
-                self.water_collisions.append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
-
-            elif obj.name == "collision2":
-                self.chests.append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
-
-        self.player.add_collisions(self.collisions + self.water_collisions)
-        self.group.add(self.player)
+        # 1. On parse les objets (DRY)
+        self.parse_map_data()
         
+        # 2. On met à jour le joueur avec la méthode centralisée
+        self.update_player_collisions()
+        
+        self.group.add(self.player)
         self.spawn_enemies()
         self.group.center(self.player.rect.center)
