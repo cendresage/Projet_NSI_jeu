@@ -9,6 +9,7 @@ from Player import Player
 from Switch import Switch
 from Enemy import Enemy
 from Boss import Agis
+from SoundManager import SoundManager
 
 
 class Map:
@@ -194,7 +195,7 @@ class Map:
             # On charge la nouvelle map
             self.load_boss_arena()
             try:
-                slam_sound = pygame.mixer.Sound("musique/son_ingame/slam_door.wav")
+                slam_sound = pygame.mixer.Sound(SoundManager.get_path("slam_door"))
                 slam_sound.play()
 
             except:
@@ -211,7 +212,7 @@ class Map:
                 self.boss_cutscene_state = 0
 
                 try:
-                    roar_sound = pygame.mixer.Sound("musique/son_ingame/roar.wav")
+                    roar_sound = pygame.mixer.Sound(SoundManager.get_path("roar"))
                     roar_sound.set_volume(0.8)
                     roar_sound.play()
 
