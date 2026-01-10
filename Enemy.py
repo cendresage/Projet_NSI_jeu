@@ -13,6 +13,9 @@ class Enemy(Entity):
         self.spritesheet = pygame.image.load("Sprites/Personnages/Ennemie.png")
         self.image = Tool.split_image(self.spritesheet, 0, 0, 40, 40)
         self.all_images = self.get_all_images()
+        
+        self.hitbox = pygame.Rect(0, 0, 32, 32)
+        self.hitbox.center = self.rect.center
 
         ZOOM = 2
         img_frame = pygame.image.load("Sprites/ATH/spr_enemy_health_bar_frame.png").convert_alpha()
