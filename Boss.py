@@ -4,6 +4,7 @@ import os
 
 from Entity import Entity
 from BossBullet import BossBullet
+from SoundManager import SoundManager
 
 class Agis(Entity):
     def __init__(self, screen, player, x, y):
@@ -76,7 +77,7 @@ class Agis(Entity):
         ]
 
         try:
-            self.shoot_sound = pygame.mixer.Sound("musique/son_ingame/boss_shot.wav") # Vérifie le nom du fichier !
+            self.shoot_sound = pygame.mixer.Sound(SoundManager.get_path("boss_shot")) # Vérifie le nom du fichier !
             self.shoot_sound.set_volume(0.6)
         except Exception as e:
             print(f"Erreur son boss shoot: {e}")
@@ -185,7 +186,7 @@ class Agis(Entity):
 
     def roar(self):
         try:
-            sound = pygame.mixer.Sound("musique/son_ingame/roar.wav")
+            sound = pygame.mixer.Sound(SoundManager.get_path("roar"))
             sound.set_volume(1.2)
             sound.play()
         except:

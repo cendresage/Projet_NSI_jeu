@@ -5,6 +5,7 @@ from Screen import Screen
 from Keylistener import Keylistener
 from Bullet import Bullet
 from Switch import Switch
+from SoundManager  import SoundManager
 
 class Player(Entity):
 
@@ -28,17 +29,14 @@ class Player(Entity):
         self.in_cutscene = False
 
         try:
-            self.footstep_sound = pygame.mixer.Sound("musique/son_ingame/footstep.wav")
-            self.footstep_sound.set_volume(0.3)
-            self.shoot_song = pygame.mixer.Sound("musique/son_ingame/laser.wav")
+            self.footstep_sound = pygame.mixer.Sound(SoundManager.get_path("footstep"))
+            self.footstep_sound.set_volume(0.6)
+            self.shoot_song = pygame.mixer.Sound(SoundManager.get_path("laser"))
             self.shoot_song.set_volume(0.3)
-            self.wallbump_sound = pygame.mixer.Sound("musique/son_ingame/wallbump.wav")
-            self.wallbump_sound.set_volume(0.4)
+            self.wallbump_sound = pygame.mixer.Sound(SoundManager.get_path("wallbump"))
+            self.wallbump_sound.set_volume(1.0)
         except Exception as e:
             print(f"Erreur son pas: {e}")
-            self.footstep_sound = None
-            self.shoot_song = None
-            self.wallbump_sound = None
 
         self.step_timer = 0
         self.step_interval = 350

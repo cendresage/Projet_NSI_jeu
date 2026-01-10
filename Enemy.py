@@ -4,6 +4,7 @@ import random
 from Entity import Entity
 from Tool import Tool
 from Bullet import Bullet
+from SoundManager import SoundManager
 
 class Enemy(Entity):
     def __init__(self, screen, player, x, y, max_hp=2, points=10):
@@ -61,7 +62,7 @@ class Enemy(Entity):
         self.last_move_time = 0
 
         try:
-            self.shoot_song = pygame.mixer.Sound("musique/son_ingame/laser.wav")
+            self.shoot_song = pygame.mixer.Sound(SoundManager.get_path("laser"))
             self.shoot_song.set_volume(0.3)
         except Exception as e:
             print(f"Erreur son pas: {e}")

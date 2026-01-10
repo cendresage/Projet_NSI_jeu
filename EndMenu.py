@@ -5,7 +5,8 @@ import os
 
 from Screen import Screen
 from Music import Music
-from Button import Button  # On importe le bouton optimisé
+from Button import Button
+from SoundManager import SoundManager
 
 # Images pour les différentes fins
 GAMEOVER_IMGS = ["Image/game_over1.png", "Image/game_over2.png"]

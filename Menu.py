@@ -1,5 +1,4 @@
 import pygame
-import sys
 
 from Screen import Screen
 from Keylistener import Keylistener
@@ -7,6 +6,7 @@ from Music import Music
 from Button import *
 from ScrollingBackground import ScrollingBackground
 from Tutorial import Tutorial
+from SoundManager import SoundManager
 
 class Menu:
     def __init__(self):
@@ -23,6 +23,16 @@ class Menu:
         self.tutorial = Tutorial(self.screen)
         self.state = "main"
         self.waiting_key_action = None
+
+        # --- KONAMI CODE VARIABLES ---
+        self.konami_code = [
+            pygame.K_UP, pygame.K_UP, 
+            pygame.K_DOWN, pygame.K_DOWN, 
+            pygame.K_LEFT, pygame.K_RIGHT, 
+            pygame.K_LEFT, pygame.K_RIGHT
+        ]
+        self.key_history = []
+        # -----------------------------
         
         center_x = self.screen.get_width() // 2
         start_y = 400
@@ -48,6 +58,21 @@ class Menu:
             if event.type == pygame.QUIT:
                 self.running = False
                 return "exit"
+            
+            # Gestion du Konami Code (uniquement dans le menu principal)
+            if event.type == pygame.KEYDOWN:
+                self.key_history.append(event.key)
+                # On garde seulement les X dernières touches (taille du code)
+                if len(self.key_history) > len(self.konami_code):
+                    self.key_history.pop(0)
+                
+                # Vérification
+                if self.key_history == self.konami_code:
+                    SoundManager.toggle_secret_mode()
+                    self.key_history = [] # Reset pour éviter double activation
+                    # On relance la musique pour entendre le changement tout de suite
+                    self.music.stop()
+                    self.music.play("menu")
 
             # --- GESTION DU CLIC POUR LE TUTO ---
             # Si le tuto est ouvert, il prend la priorité sur tout le reste

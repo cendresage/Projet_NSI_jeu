@@ -6,6 +6,7 @@ from Keylistener import Keylistener
 from Player import Player
 from Boss import Agis
 from Music import Music
+from SoundManager import SoundManager
 
 HUD_SCALE = 2
 
@@ -53,14 +54,12 @@ class Game:
 
         # --- SON HITMARKER ---
         try:
-            self.hit_sound = pygame.mixer.Sound("musique/son_ingame/hitmarker.wav")
+            self.hit_sound = pygame.mixer.Sound(SoundManager.get_path("hitmarker"))
             self.hit_sound.set_volume(0.5)
-            self.chest_sound = pygame.mixer.Sound("musique/son_ingame/chest_open.mp3")
+            self.chest_sound = pygame.mixer.Sound(SoundManager.get_path("chest_open"))
             self.chest_sound.set_volume(0.5)
         except Exception as e:
             print(f"Erreur son hit: {e}")
-            self.hit_sound = None
-            self.chest_sound = None
 
         # --- TIMER DU JEU (5 minutes = 300 secondes) ---
         self.total_time = 300 
@@ -185,7 +184,7 @@ class Game:
                     
                     # Vérifier la distance
                     dist = pygame.math.Vector2(self.Player.rect.center) - pygame.math.Vector2(chest_rect.center)
-                    if dist.length() < 25: 
+                    if dist.length() < 50: 
                         # MODIFICATION ICI : On vérifie D'ABORD si on a besoin de soin
                         if self.Player.hp < self.Player.max_hp:
                             # On applique le soin et le son

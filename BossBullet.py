@@ -1,6 +1,6 @@
 import pygame
-import math
-import random
+
+from SoundManager import SoundManager
 
 class BossBullet(pygame.sprite.Sprite):
     def __init__(self, start_x, start_y, target_x, target_y, is_homing = False):
@@ -31,7 +31,7 @@ class BossBullet(pygame.sprite.Sprite):
             self.frames_explode[0].fill((100, 100, 100))
 
         try:
-            self.explode_sound = pygame.mixer.Sound("musique/son_ingame/boss_impact.wav")
+            self.explode_sound = pygame.mixer.Sound(SoundManager.get_path("boss_impact"))
             self.explode_sound.set_volume(0.5) # Volume bas comme demandé (0.2)
         except:
             self.explode_sound = None
