@@ -32,7 +32,7 @@ class BossBullet(pygame.sprite.Sprite):
 
         try:
             self.explode_sound = pygame.mixer.Sound(SoundManager.get_path("boss_impact"))
-            self.explode_sound.set_volume(0.5) # Volume bas comme demandé (0.2)
+            self.explode_sound.set_volume(0.3)
         except:
             self.explode_sound = None
 

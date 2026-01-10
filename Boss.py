@@ -187,7 +187,7 @@ class Agis(Entity):
     def roar(self):
         try:
             sound = pygame.mixer.Sound(SoundManager.get_path("roar"))
-            sound.set_volume(1.2)
+            sound.set_volume(1.5)
             sound.play()
         except:
             pass

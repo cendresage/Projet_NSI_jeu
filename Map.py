@@ -213,14 +213,14 @@ class Map:
 
                 try:
                     roar_sound = pygame.mixer.Sound(SoundManager.get_path("roar"))
-                    roar_sound.set_volume(0.8)
+                    roar_sound.set_volume(1.5)
                     roar_sound.play()
 
                 except Exception as e:
                     print(f"Erreur chargement cri du boss : {e}")
                 
                 try:
-                    pygame.mixer.music.load("musique/bossbattle.mp3")
+                    pygame.mixer.music.load(SoundManager.get_path("bossbattle"))
                     pygame.mixer.music.set_volume(0.5)
                     pygame.mixer.music.play(-1)
 
