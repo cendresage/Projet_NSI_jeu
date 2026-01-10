@@ -185,7 +185,7 @@ class Game:
                     
                     # Vérifier la distance
                     dist = pygame.math.Vector2(self.Player.rect.center) - pygame.math.Vector2(chest_rect.center)
-                    if dist.length() < 100: 
+                    if dist.length() < 25: 
                         # MODIFICATION ICI : On vérifie D'ABORD si on a besoin de soin
                         if self.Player.hp < self.Player.max_hp:
                             # On applique le soin et le son
