@@ -4,8 +4,9 @@ import sys
 from Screen import Screen
 from Keylistener import Keylistener
 from Music import Music
-from Button import * # On importe depuis Button
-from ScrollingBackground import ScrollingBackground # On importe depuis le nouveau fichier
+from Button import *
+from ScrollingBackground import ScrollingBackground
+from Tutorial import Tutorial
 
 class Menu:
     def __init__(self):
@@ -19,6 +20,7 @@ class Menu:
 
         self.background = ScrollingBackground(self.screen.get_height(), speed=1)
         
+        self.tutorial = Tutorial(self.screen)
         self.state = "main"
         self.waiting_key_action = None
         
@@ -47,6 +49,12 @@ class Menu:
                 self.running = False
                 return "exit"
 
+            # --- GESTION DU CLIC POUR LE TUTO ---
+            # Si le tuto est ouvert, il prend la priorité sur tout le reste
+            if self.tutorial.active:
+                self.tutorial.handle_input(event)
+                return None # On ne traite rien d'autre tant que le tuto est là
+
             if self.waiting_key_action:
                 if event.type == pygame.KEYDOWN:
                     self.keylistener.controls[self.waiting_key_action] = event.key
@@ -61,6 +69,8 @@ class Menu:
                             return "play"
                         elif self.btn_settings.rect.collidepoint(mouse_pos):
                             self.state = "settings"
+                        elif self.btn_tuto.rect.collidepoint(mouse_pos):
+                            self.tutorial.start()
                         elif self.btn_exit.rect.collidepoint(mouse_pos):
                             self.running = False
                             return "exit"
@@ -170,6 +180,11 @@ class Menu:
             elif self.state == "settings":
                 self.draw_settings()
 
+            if self.tutorial.active:
+                self.tutorial.draw()
+
             pygame.display.flip()
             self.clock.tick(60)
+        return "exit"
+
             
