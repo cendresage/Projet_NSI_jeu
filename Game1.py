@@ -2,11 +2,10 @@ import pygame
 
 from Screen import Screen
 from Map import Map
-from Entity import Entity
 from Keylistener import Keylistener
 from Player import Player
-from Enemy import Enemy
 from Boss import Agis
+from Music import Music
 
 HUD_SCALE = 2
 
@@ -19,6 +18,9 @@ class Game:
         self.running = True
         self.screen = Screen()
         self.keylistener = Keylistener()
+
+        self.music = Music()
+        self.music.play("game")
         
         # 1. Création des groupes
         self.player_bullets = pygame.sprite.Group()
@@ -53,9 +55,27 @@ class Game:
         try:
             self.hit_sound = pygame.mixer.Sound("musique/son_ingame/hitmarker.wav")
             self.hit_sound.set_volume(0.5)
+            self.chest_sound = pygame.mixer.Sound("musique/son_ingame/chest_open.mp3")
+            self.chest_sound.set_volume(0.5)
         except Exception as e:
             print(f"Erreur son hit: {e}")
             self.hit_sound = None
+            self.chest_sound = None
+
+        # --- TIMER DU JEU (5 minutes = 300 secondes) ---
+        self.total_time = 300 
+        self.start_ticks = pygame.time.get_ticks() # Temps au lancement
+        self.elapsed_time_paused = 0 # Temps accumulé avant la pause (Boss)
+        self.is_timer_paused = False
+
+        # --- MESSAGES FLOTTANTS (Coffres) ---
+        self.info_text = ""
+        self.info_text_timer = 0
+        self.info_color = (255, 255, 255)
+
+        # --- ETAT VICTOIRE ---
+        self.boss_defeated_time = None # Pour le délai de 3 secondes
+        self.boss_spawned = False # Pour savoir si on a déjà rencontré le boss
 
 
     def _get_player_head_image(self):
@@ -70,18 +90,59 @@ class Game:
     def run(self):
         while self.running:
             if self.Player.hp <= 0:
+                self.music.stop()
                 return "game_over"
+            
+            # --- GESTION DU TIMER ---
+            current_ticks = pygame.time.get_ticks()
+
+            # Pause du timer si on est dans la map du boss
+            if "map_boss" in self.map.current_map_name: # Vérifie si le nom de la map contient "map_boss"
+                if not self.is_timer_paused:
+                    # On vient d'entrer, on stocke le temps déjà écoulé
+                    self.elapsed_time_paused += (current_ticks - self.start_ticks)
+                    self.is_timer_paused = True
+                display_time = self.total_time - (self.elapsed_time_paused // 1000)
+            else:
+                if self.is_timer_paused:
+                    # On sort de la map boss, on redémarre le compteur
+                    self.start_ticks = current_ticks
+                    self.is_timer_paused = False
+
+                # Temps écoulé total = temps stocké + temps depuis le dernier start
+                seconds_passed = (self.elapsed_time_paused + (current_ticks - self.start_ticks)) // 1000
+                display_time = self.total_time - seconds_passed
+
+            # Fin du temps
+            if display_time <= 0 and not self.is_timer_paused:
+                return "time_out"
                 
             self.handle_input()
 
-            # --- MISE A JOUR DES ENNEMIS CLASSIQUES ---
+            # --- MISE A JOUR ENNEMIS ET BOSS ---
+            boss_present = False
             for enemy in self.enemy_group:
                 if isinstance(enemy, Agis):
-                    continue
+                    boss_present = True
+                    self.boss_spawned = True
+                    continue # Le Boss a son update spécial plus bas
+                
                 new_bullet = enemy.update()
                 if new_bullet:
                     self.map.group.add(new_bullet)
                     self.enemy_bullets.add(new_bullet)
+
+            # --- GESTION VICTOIRE (BOSS MORT) ---
+            # Si le boss a spawn, qu'on est sur sa map, mais qu'il n'est plus dans le groupe
+            # (et qu'il n'est pas en train de mourir, mais la suppression se fait après l'anim)
+            if self.boss_spawned and "map_boss" in self.map.current_map_name and not boss_present:
+                # Le boss est mort !
+                if self.boss_defeated_time is None:
+                    self.boss_defeated_time = current_ticks
+                
+                # Attente de 3 secondes
+                if current_ticks - self.boss_defeated_time > 3000:
+                    return "win"
 
             # --- COLLISIONS JOUEUR vs ENNEMIS ---
             hits = pygame.sprite.groupcollide(
@@ -111,12 +172,43 @@ class Game:
             for bullet in hits:
                 bullet.kill()
 
+            # --- COLLISIONS BALLES JOUEUR vs COFFRES  ---
+            # On vérifie si les balles touchent les rects des coffres
+            for bullet in self.player_bullets:
+                # collidelist renvoie l'index du rect touché, ou -1
+                index = bullet.rect.collidelist(self.map.chests)
+                if index != -1:
+                    bullet.kill()
+                    
+                    # Logique d'ouverture
+                    chest_rect = self.map.chests[index]
+                    
+                    # Vérifier la distance
+                    dist = pygame.math.Vector2(self.Player.rect.center) - pygame.math.Vector2(chest_rect.center)
+                    if dist.length() < 100: 
+                        # MODIFICATION ICI : On vérifie D'ABORD si on a besoin de soin
+                        if self.Player.hp < self.Player.max_hp:
+                            # On applique le soin et le son
+                            self.Player.hp += 1
+                            if self.chest_sound:
+                                self.chest_sound.play()
+                            self.show_message("+1 PV", (0, 255, 0))
+                                
+                            del self.map.chests[index]
+                        else:
+                            # Si on a toute la vie, on ne supprime PAS le coffre
+                            self.show_message("Vous avez tous vos PV", (200, 200, 200))
+                    else:
+                        self.show_message("Trop loin !", (255, 100, 100))
+
             hits_player = pygame.sprite.spritecollide(
                 self.Player, 
                 self.enemy_bullets, 
                 True, 
                 collided=self.check_collision_hitbox
             )
+            if hits_player and self.hit_sound:
+                self.hit_sound.play()
             for bullet in hits_player:
                 self.Player.damage(1)
             
@@ -146,7 +238,7 @@ class Game:
                 self.player_bullets.add(delayed_bullet)
                 self.map.group.add(delayed_bullet)
             
-            self.draw_hud()
+            self.draw_hud(display_time)
             
             camera_pos = self.map.group.view.topleft
             map_zoom = self.map.map_layer.zoom
@@ -158,6 +250,11 @@ class Game:
             self.screen.update()
         
         return "quit"
+    
+    def show_message(self, text, color):
+        self.info_text = text
+        self.info_color = color
+        self.info_text_timer = pygame.time.get_ticks()
 
     def check_collision_hitbox(self, sprite1, sprite2):
         return sprite1.hitbox.colliderect(sprite2.hitbox)
@@ -185,7 +282,7 @@ class Game:
                     if new_bullet: 
                         self.player_bullets.add(new_bullet)
                         self.map.group.add(new_bullet)
-    def draw_hud(self):
+    def draw_hud(self, display_time):
         display = self.screen.get_display()
 
         # Constantes d'alignement
@@ -220,6 +317,31 @@ class Game:
         
         score_text = self.small_font.render(f"{self.Player.point}", True, (255, 255, 255))
         display.blit(score_text, (score_x, score_y))
+
+        # --- TIMER (HAUT DROITE) ---
+        screen_w = display.get_width()
+        minutes = int(display_time // 60)
+        seconds = int(display_time % 60)
+        time_str = f"{minutes:02}:{seconds:02}"
+        
+        # Couleur : Rouge si < 30 secondes, sinon Blanc
+        color_time = (255, 255, 255)
+        if display_time < 30 and not self.is_timer_paused:
+            color_time = (255, 0, 0)
+        elif self.is_timer_paused:
+            color_time = (255, 215, 0) # Doré si pause (Boss)
+
+        time_surf = self.font.render(time_str, True, color_time)
+        display.blit(time_surf, (screen_w - 120, 20))
+
+        # --- TEXTE D'INFO FLOTTANT (+1 PV, etc) ---
+        if self.info_text and pygame.time.get_ticks() - self.info_text_timer < 2000: # Affiche pendant 2s
+            text_surf = self.font.render(self.info_text, True, self.info_color)
+            rect = text_surf.get_rect(center=(screen_w//2, screen_w//2 - 50))
+            # Petit fond noir pour lisibilité
+            bg_rect = rect.inflate(10, 10)
+            pygame.draw.rect(display, (0,0,0), bg_rect)
+            display.blit(text_surf, rect)
 
     
     def fade_out_game_over(self):

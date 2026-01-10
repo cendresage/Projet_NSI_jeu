@@ -22,6 +22,8 @@ class Map:
         self.player: Player = None
         self.switchs: list[Switch]
         self.collision: list[pygame.Rect] | None = None
+        self.chests: list[pygame.Rect] = []
+
 
         self.map_layer_config = {
             "map0": 6,
@@ -30,7 +32,7 @@ class Map:
 
         self.spawn_data = self.load_spawn_data()
 
-        self.current_map = Switch("switch", "map2", pygame.Rect(0, 0, 0, 0), 0)
+        self.current_map = Switch("switch", "map0", pygame.Rect(0, 0, 0, 0), 0)
 
         self.switch_map(self.current_map)
 
@@ -64,14 +66,18 @@ class Map:
         self.switchs = []
         self.collisions = []
         self.water_collisions = []
+        self.chests = []
 
         for obj in self.tmx_data.objects:
             if obj.name == "collision":
                 self.collisions.append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
 
-            if obj.name == "collision1":
+            elif obj.name == "collision1":
                 self.water_collisions.append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
             
+            elif obj.name == "collision2":
+                self.chests.append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
+
             # Petite sécurité si un objet n'a pas de nom dans Tiled
             if obj.name is None: continue 
             
@@ -83,12 +89,11 @@ class Map:
 
         self.spawn_enemies()
 
-# Code à optimiser ici
         if self.player:
             self.pose_player(switch)
             self.player.align_hitbox()
             self.player.add_switchs(self.switchs)
-            self.player.add_collisions(self.collisions + self.water_collisions)
+            self.player.add_collisions(self.collisions + self.water_collisions + self.chests)
 
             if hasattr(self.player, "_layer"):
                 del self.player._layer
@@ -150,7 +155,7 @@ class Map:
         self.player = player
         self.player.align_hitbox()
         self.player.add_switchs(self.switchs)
-        self.player.add_collisions(self.collisions + self.water_collisions)
+        self.player.add_collisions(self.collisions + self.water_collisions + self.chests)
         self.spawn_enemies()
 
     def update(self, bullet_group: pygame.sprite.Group):
@@ -258,9 +263,13 @@ class Map:
         for obj in self.tmx_data.objects:
             if obj.name == "collision":
                 self.collisions.append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
-            elif obj.name == "collision1": # Si tu as de l'eau dans la salle du boss
+
+            elif obj.name == "collision1":
                 self.water_collisions.append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
-        
+
+            elif obj.name == "collision2":
+                self.chests.append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
+
         self.player.add_collisions(self.collisions + self.water_collisions)
         self.group.add(self.player)
         

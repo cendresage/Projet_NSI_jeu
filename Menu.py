@@ -12,8 +12,9 @@ ZOOM = 2
 BACKGROUND_PATH = "Image/Image de fond.png"
 BUTTON_IMG_PATH = "Sprites/ATH/spr_banner_hud.png"
 
-GAMEOVER_IMG_1 = "Image/game_over1.png"
-GAMEOVER_IMG_2 = "Image/game_over2.png"
+GAMEOVER_IMGS = ["Image/game_over1.png", "Image/game_over2.png"]
+TIMEOUT_IMGS = ["Image/time_elapsed1.png", "Image/time_elapsed2.png"]
+WIN_IMGS = ["Image/Win1.png", "Image/Win2.png"]
 
 WHITE = (255, 255, 255)
 GOLD = (255, 215, 0)
@@ -267,12 +268,14 @@ class Menu:
             pygame.display.flip()
             self.clock.tick(60)
 
-class GameOverMenu:
-    def __init__(self, score):
+class EndMenu:
+    def __init__(self, score, result_type="dead"):
         self.screen_obj = Screen()
         self.screen = self.screen_obj.get_display()
         self.running = True
         self.clock = pygame.time.Clock()
+
+        self.music = Music()
 
         self.score = score
         self.highscore = self.load_highscore()
@@ -285,14 +288,30 @@ class GameOverMenu:
 
         self.font_score = pygame.font.SysFont(None, 40, bold=True)
         self.font_title = pygame.font.SysFont(None, 60, bold=True)
+        self.result_type = result_type
+
+        img_paths = GAMEOVER_IMGS
+        sound_track = "game_over"
+
+        if result_type == "time_out":
+            img_paths = TIMEOUT_IMGS
+            sound_track = "game_over"
+        elif result_type == "win":
+            img_paths = WIN_IMGS
+            sound_track = "menu"
 
         try:
-            self.image = [
-                pygame.image.load(GAMEOVER_IMG_1).convert(),
-                pygame.image.load(GAMEOVER_IMG_2).convert()
-            ]
+            self.music.play(sound_track)
+        except:
+            pass
+
+
+        try:
+            self.image = [pygame.image.load(p).convert() for p in img_paths]
         except:
             self.image = [pygame.Surface((800,600)), pygame.Surface((800,600))]
+            self.image[0].fill((0,0,0))
+            self.image[1].fill((20,20,20))
 
         self.images = [
             pygame.transform.scale(img, (self.screen.get_width(), self.screen.get_height()))
@@ -375,6 +394,7 @@ class GameOverMenu:
         while self.running:
             action = self.handle_input()
             if action == "menu":
+                self.music.stop()
                 return "menu"
 
             current_time = pygame.time.get_ticks()
