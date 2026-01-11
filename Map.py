@@ -213,7 +213,7 @@ class Map:
 
                 try:
                     roar_sound = pygame.mixer.Sound(SoundManager.get_path("roar"))
-                    roar_sound.set_volume(1.5)
+                    roar_sound.set_volume(5.0)
                     roar_sound.play()
 
                 except Exception as e:

@@ -55,9 +55,9 @@ class Game:
         # --- SON HITMARKER ---
         try:
             self.hit_sound = pygame.mixer.Sound(SoundManager.get_path("hitmarker"))
-            self.hit_sound.set_volume(0.5)
+            self.hit_sound.set_volume(0.7)
             self.chest_sound = pygame.mixer.Sound(SoundManager.get_path("chest_open"))
-            self.chest_sound.set_volume(0.5)
+            self.chest_sound.set_volume(1.0)
         except Exception as e:
             print(f"Erreur son hit: {e}")
 

@@ -33,7 +33,6 @@ class Agis(Entity):
 
         try:
             self.sheet_smoke = pygame.image.load("Sprites/Bullet/Smoke.png").convert_alpha()
-            self.sheet_smoke = pygame.transform.scale_by(self.sheet_smoke, 2)
             self.death_frames = self.get_frames_row(self.sheet_smoke, 6, 17, 64)
         except Exception as e:
             print(f"Erreur chargement smoke boss: {e}")
@@ -187,7 +186,7 @@ class Agis(Entity):
     def roar(self):
         try:
             sound = pygame.mixer.Sound(SoundManager.get_path("roar"))
-            sound.set_volume(1.5)
+            sound.set_volume(5.0)
             sound.play()
         except:
             pass
